@@ -2,7 +2,7 @@
   "expo": {
     "name": "Resq Mobile",
     "slug": "resq-mobile",
-    "scheme": "mobile",
+    "scheme": "resq-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +25,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router"]
+    "plugins": ["expo-router"],
+    "experiments": {
+      "tsconfigPaths": true
+    }
   }
 }
