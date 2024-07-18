@@ -14,7 +14,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             minWidth: Dimensions.get("window").width,
           }}
         >
-          <Image source={images.logo} contentFit="contain" className="w-[180px] h-[180px]" />
+          <Image
+            source={images.logo}
+            contentFit="contain"
+            className="w-[180px] h-[180px]"
+          />
           {children}
         </View>
       </ScrollView>

@@ -70,3 +70,4 @@ const InputField = React.memo(
 );
 
 export default InputField;
+InputField.displayName = "InputField";

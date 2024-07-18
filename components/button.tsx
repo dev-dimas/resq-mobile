@@ -52,7 +52,7 @@ export default function Button<T extends FieldValues>({
           />
         )}
         <Text className={cn("font-pjs-bold text-sm text-white", textStyles)}>
-          {children}
+          {isLoading ? "Loading..." : children}
         </Text>
       </View>
     </TouchableOpacity>

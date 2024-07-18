@@ -1,24 +1,46 @@
-import AuthLayout from "@/components/auth/auth-layout";
+import { postSignIn } from "@/api/auth";
 import Button from "@/components/button";
 import InputField from "@/components/input-field";
+import AuthLayout from "@/components/layout/auth-layout";
+import SecureStore from "@/lib/secure-store";
 import { TSignInSchema, signInSchema } from "@/schemas/form/auth";
+import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function SignIn() {
+  const { setToken } = useToken();
+
+  const signInRequest = useMutation({
+    mutationFn: postSignIn,
+  });
+
   const form = useForm({
     resolver: zodResolver(signInSchema),
   });
 
-  const {
-    control,
-    formState: { isSubmitting },
-  } = form;
+  const { control } = form;
 
-  const onSubmit: SubmitHandler<TSignInSchema> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<TSignInSchema> = async (data) => {
+    const signInResponse = await signInRequest.mutateAsync(data);
+
+    if (signInResponse.data) {
+      await SecureStore.setItemAsync("token", signInResponse.data.token);
+      setToken(signInResponse.data.token);
+      return;
+    }
+
+    if (signInResponse.message === "Forbidden") {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Email atau kata sandi salah!",
+      });
+    }
   };
 
   return (
@@ -31,18 +53,22 @@ export default function SignIn() {
             name="email"
             control={control}
             label="Email"
-            editable={!isSubmitting}
+            editable={!signInRequest.isPending}
           />
           <InputField
             name="password"
             control={control}
             label="Kata Sandi"
             type="password"
-            editable={!isSubmitting}
+            editable={!signInRequest.isPending}
           />
         </View>
 
-        <Button onSubmit={onSubmit} containerStyles="bg-[#FF3B30] w-full mt-[22px]">
+        <Button
+          onSubmit={onSubmit}
+          containerStyles="bg-[#FF3B30] w-full mt-[22px]"
+          isLoading={signInRequest.isPending}
+        >
           Masuk
         </Button>
       </FormProvider>

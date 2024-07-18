@@ -1,19 +1,25 @@
 import { Picker } from "@react-native-picker/picker";
-import React, { useState } from "react";
+import { ClassValue } from "clsx";
+import React from "react";
+import { Control, Controller, FieldValues } from "react-hook-form";
 import { Text, View } from "react-native";
 import { cn } from "../lib/utils";
-import { ClassValue } from "clsx";
-import { Control, Controller, FieldValues } from "react-hook-form";
 
 type Props = {
   label: string;
   name: string;
   control: Control<FieldValues>;
   containerStyles?: ClassValue;
+  editable?: boolean;
 };
 
-export default function RolePicker({ label, name, control, containerStyles }: Props) {
-  const [asCustomer, setAsCustomer] = useState<"true" | "false">("true");
+export default function RolePicker({
+  label,
+  name,
+  control,
+  containerStyles,
+  editable = true,
+}: Props) {
   return (
     <Controller
       name={name}
@@ -27,6 +33,7 @@ export default function RolePicker({ label, name, control, containerStyles }: Pr
           <View className="flex flex-row w-full mt-2 overflow-hidden rounded-lg">
             <Picker
               mode="dropdown"
+              enabled={editable}
               selectedValue={value}
               onValueChange={onChange}
               style={{
@@ -35,6 +42,7 @@ export default function RolePicker({ label, name, control, containerStyles }: Pr
                 backgroundColor: "#EFEFEF",
                 fontSize: 14,
                 fontFamily: "PlusJakartaSans-Regular",
+                color: editable ? "black" : "#B1B1B1",
               }}
             >
               <Picker.Item label="Konsumen" value="true" />
