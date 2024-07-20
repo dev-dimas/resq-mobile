@@ -2,6 +2,7 @@ import { priceToRupiah, twoDecimals } from "@/lib/utils";
 import { icons } from "constants/";
 import { ProductNearby } from "data/product.data";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 
 export default function ProductCard({ product }: { product: ProductNearby }) {
@@ -9,6 +10,7 @@ export default function ProductCard({ product }: { product: ProductNearby }) {
     <TouchableOpacity
       activeOpacity={0.7}
       className="w-full p-4 my-1 overflow-hidden bg-white border border-opacity-50 rounded-lg border-slate-200"
+      onPress={() => router.push(`/product/${product.id}`)}
     >
       <View className="flex flex-row w-full gap-3 ">
         <Image

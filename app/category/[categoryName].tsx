@@ -7,11 +7,12 @@ import { Dimensions, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoryName() {
-  const { categoryName } = useLocalSearchParams();
+  let { categoryName } = useLocalSearchParams();
+  categoryName = categoryName as string;
 
   const categoryNameAvailable = ["makanan", "minuman", "salad", "dessert"];
 
-  if (!categoryNameAvailable.includes(categoryName as string)) {
+  if (!categoryNameAvailable.includes(categoryName)) {
     return (
       <>
         <Stack.Screen
@@ -44,8 +45,7 @@ export default function CategoryName() {
 
   const products = dataProduct.filter(
     (product) =>
-      product.categoryName ===
-      (categoryName as string).replace(/^./, (match) => match.toUpperCase())
+      product.categoryName === categoryName.replace(/^./, (match) => match.toUpperCase())
   );
 
   return (
@@ -53,9 +53,7 @@ export default function CategoryName() {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: (categoryName as string).replace(/^./, (match) =>
-            match.toUpperCase()
-          ),
+          headerTitle: categoryName.replace(/^./, (match) => match.toUpperCase()),
           headerTitleStyle: {
             fontFamily: "PlusJakartaSans-Bold",
             fontSize: 20,
@@ -86,8 +84,7 @@ export default function CategoryName() {
               }}
               ListEmptyComponent={
                 <Text className="text-center font-pjs-regular">
-                  Kategori{" "}
-                  {(categoryName as string).replace(/^./, (match) => match.toUpperCase())}{" "}
+                  Kategori {categoryName.replace(/^./, (match) => match.toUpperCase())}{" "}
                   kosong!.
                 </Text>
               }
