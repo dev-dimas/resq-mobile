@@ -1,5 +1,4 @@
 import { toastConfig } from "@/components/toast-config";
-import SecureStore from "@/lib/secure-store";
 import { useToken } from "@/store/useToken";
 import { useReactQueryDevTools } from "@dev-plugins/react-query/build/useReactQueryDevTools";
 import NetInfo from "@react-native-community/netinfo";
@@ -24,7 +23,7 @@ export default function RootLayout() {
     "PlusJakartaSans-Regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
     "PlusJakartaSans-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   });
-  const { token, setToken } = useToken();
+  const { token } = useToken();
 
   useEffect(() => {
     if (error) throw error;
@@ -60,6 +59,10 @@ export default function RootLayout() {
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="customer" />
+        <Stack.Screen name="search" />
+        <Stack.Screen name="category/[categoryName]" />
+        <Stack.Screen name="product/[id]" />
+        <Stack.Screen name="product/nearby" />
         <Stack.Screen name="seller/home" />
       </Stack>
       <Toast autoHide position="top" visibilityTime={3000} config={toastConfig} />

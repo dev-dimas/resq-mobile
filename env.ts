@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-let envSchema = z.object({
+const envSchema = z.object({
   EXPO_PUBLIC_API_URL: z.string().min(1),
 });
 

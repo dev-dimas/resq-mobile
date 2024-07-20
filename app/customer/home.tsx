@@ -4,7 +4,7 @@ import UserLayout from "@/components/layout/user-layout";
 import { cn, getGreeting } from "@/lib/utils";
 import { icons, images } from "constants/";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
@@ -57,7 +57,11 @@ export default function Home() {
         </View>
 
         {/* Search */}
-        <TouchableOpacity activeOpacity={0.7} className="bg-[#EFEFEF] mt-6 rounded-lg">
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="bg-[#EFEFEF] mt-6 rounded-lg"
+          onPress={() => router.navigate("/search")}
+        >
           <View className="px-[10px] py-3 flex flex-row gap-2">
             <Image source={icons.search} className="w-6 h-6" />
             <Text className="font-pjs-regular text-sm text-[#ACACAC]">
@@ -67,7 +71,7 @@ export default function Home() {
         </TouchableOpacity>
 
         {/* Hero or banner image */}
-        <View className="h-[133px] flex items-center justify-center overflow-hidden rounded-lg mt-6">
+        <View className="h-[145px] flex items-center justify-center overflow-hidden rounded-lg mt-6">
           <Image
             source={images.posterHomepage}
             contentFit="contain"

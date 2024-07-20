@@ -1,6 +1,6 @@
-import { FlashList } from "@shopify/flash-list";
 import { images } from "constants/";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
 const categories = [
@@ -32,7 +32,7 @@ export default function CategoryList() {
             key={category.title}
             activeOpacity={0.7}
             className="flex items-center gap-1 mt-4"
-            onPress={() => console.log(category.title)}
+            onPress={() => router.navigate(`/category/${category.title.toLowerCase()}`)}
           >
             <View className="w-[70px] h-[70px] bg-[#F1F1F1] flex items-center justify-center rounded-full">
               <Image

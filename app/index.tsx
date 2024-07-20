@@ -1,4 +1,4 @@
-import { Link, Redirect } from "expo-router";
+import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
@@ -21,6 +21,15 @@ export default function Index() {
       </Link>
       <Link href={"/seller/home"} className="text-lg font-semibold">
         Seller Homepage
+      </Link>
+      <Link href={"/category/not-found"} className="text-lg font-semibold">
+        Category Not Found
+      </Link>
+      <Link href={"/product/nearby"} className="text-lg font-semibold">
+        Nearby
+      </Link>
+      <Link href={"/product/1"} className="text-lg font-semibold">
+        Product ID : 1
       </Link>
     </SafeAreaView>
   );

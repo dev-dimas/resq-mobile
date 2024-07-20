@@ -1,6 +1,5 @@
-import { cn } from "@/lib/utils";
 import { Image, ImageSource } from "expo-image";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 type Props = {
   icon: string | ImageSource;

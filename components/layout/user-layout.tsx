@@ -7,7 +7,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
     <SafeAreaView className="h-full bg-[#F8F8F9]">
       <ScrollView>
         <View
-          className="flex items-center flex-1 w-full pt-5 pb-8 px-7"
+          className="flex items-center flex-1 w-full px-6 pt-5 pb-8"
           style={{
             minWidth: Dimensions.get("window").width,
           }}

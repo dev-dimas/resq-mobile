@@ -31,7 +31,7 @@ export default function SignUp() {
   const { control } = form;
 
   const onSubmit: SubmitHandler<TSignUpSchema> = async (data) => {
-    const { confirmPassword, ...signUpData } = data;
+    const { confirmPassword: _confirmPassword, ...signUpData } = data;
     const signUpResponse = await signUpRequest.mutateAsync(signUpData);
 
     if (signUpResponse.data) {
