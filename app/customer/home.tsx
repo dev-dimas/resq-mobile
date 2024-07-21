@@ -20,7 +20,7 @@ export default function Home() {
           >
             Selamat {getGreeting()} $Name!
           </Text>
-          <Link href="/account" className="border border-[#1B1717] rounded-lg p-1">
+          <Link href="/setting" className="border border-[#1B1717] rounded-lg p-1">
             <Image source={icons.user} contentFit="contain" className={cn("w-6 h-6")} />
           </Link>
         </View>

@@ -1,0 +1,35 @@
+import ImageView from "react-native-image-viewing";
+import CustomHeaderImageViewer from "./custom-header-image-viewer";
+import { ImageSource } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+
+export default function ImageViewer({
+  images,
+  isVisible,
+  setIsVisible,
+  title,
+}: {
+  images: ImageSource[];
+  isVisible: boolean;
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  title: string;
+}) {
+  return (
+    <>
+      <StatusBar backgroundColor={isVisible ? "black" : undefined} />
+      <ImageView
+        images={images}
+        imageIndex={0}
+        visible={isVisible}
+        onRequestClose={() => setIsVisible(false)}
+        HeaderComponent={({ imageIndex }) => (
+          <CustomHeaderImageViewer
+            onRequestClose={() => setIsVisible(false)}
+            title={title}
+            imageIndex={imageIndex}
+          />
+        )}
+      />
+    </>
+  );
+}

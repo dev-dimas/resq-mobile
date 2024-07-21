@@ -11,18 +11,27 @@ type Props = {
   name: string;
   control: Control<FieldValues>;
   type?: "text" | "password";
+  defaultValue?: string;
   containerStyles?: ClassValue;
 } & TextInputProps;
 
 const InputField = React.memo(
-  ({ label, name, control, type = "text", containerStyles, ...props }: Props) => {
+  ({
+    label,
+    name,
+    control,
+    type = "text",
+    defaultValue,
+    containerStyles,
+    ...props
+  }: Props) => {
     const [showText, setShowText] = useState(false);
 
     return (
       <Controller
         name={name}
         control={control}
-        defaultValue={""}
+        defaultValue={defaultValue || ""}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <View className={cn(containerStyles)}>
             {label && (

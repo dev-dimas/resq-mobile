@@ -1,6 +1,6 @@
 import BackButton from "@/components/back-button";
 import SubscribeButton from "@/components/customer/subscribe-button";
-import ImageViewer from "@/components/image-view";
+import ImageViewer from "@/components/image-viewer";
 import { priceToRupiah } from "@/lib/utils";
 import { icons } from "constants/";
 import { products } from "data/product.data";
@@ -76,6 +76,7 @@ export default function ProductDetail() {
           }}
         >
           <ImageViewer
+            title="Foto Produk"
             images={[{ uri: product.images[0] }]}
             isVisible={isImageViewerVisible}
             setIsVisible={setIsImageViewerVisible}
