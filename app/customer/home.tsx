@@ -9,7 +9,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
   return (
-    <UserLayout>
+    <UserLayout containerClassname="pt-5">
       <View className="w-full">
         {/* Greeting and button account menu */}
         <View className="flex flex-row items-center justify-between">

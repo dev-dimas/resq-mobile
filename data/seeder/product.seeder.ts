@@ -6,7 +6,7 @@ import path from "path";
 type ProductCategory = "Makanan" | "Minuman" | "Salad" | "Dessert";
 
 function generateDistance(isNear: boolean) {
-  return faker.number.float({ min: 0.001, max: isNear ? 1 : 25000, fractionDigits: 3 });
+  return faker.number.float({ min: 0.001, max: isNear ? 1 : 25, fractionDigits: 3 });
 }
 
 function generateProductData({
