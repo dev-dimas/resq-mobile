@@ -2,6 +2,7 @@ import ImageView from "react-native-image-viewing";
 import CustomHeaderImageViewer from "./custom-header-image-viewer";
 import { ImageSource } from "expo-image";
 import { StatusBar } from "expo-status-bar";
+import { ImageRequireSource, ImageURISource } from "react-native";
 
 export default function ImageViewer({
   images,
@@ -9,7 +10,7 @@ export default function ImageViewer({
   setIsVisible,
   title,
 }: {
-  images: ImageSource[];
+  images: ImageURISource[] | ImageRequireSource[];
   isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
