@@ -45,7 +45,7 @@ export default function Home() {
                 numberOfLines={1}
                 className="font-pjs-bold text-base text-[#1B1717] w-[70%]"
               >
-                Jalan Raya Rungkut Industri
+                Jalan Rungkut Madya No. 1, Surabaya
               </Text>
             </View>
             <Image

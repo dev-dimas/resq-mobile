@@ -8,9 +8,14 @@ import { View, Text, TouchableOpacity } from "react-native";
 type Props = {
   product: ProductNearby;
   withFavoriteButton?: boolean;
+  hideDistance?: boolean;
 };
 
-export default function ProductCard({ product, withFavoriteButton = false }: Props) {
+export default function ProductCard({
+  product,
+  hideDistance = false,
+  withFavoriteButton = false,
+}: Props) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -33,20 +38,22 @@ export default function ProductCard({ product, withFavoriteButton = false }: Pro
               >
                 {product.name}
               </Text>
-              <View className="flex flex-row items-center gap-1">
-                <Image
-                  source={icons.location}
-                  className="h-3 aspect-square"
-                  tintColor="#757575"
-                />
-                <Text
-                  className="text-xs font-pjs-regular text-[#757575]"
-                  ellipsizeMode="tail"
-                  numberOfLines={1}
-                >
-                  {twoDecimals(product.distance)} km
-                </Text>
-              </View>
+              {!hideDistance && (
+                <View className="flex flex-row items-center gap-1">
+                  <Image
+                    source={icons.location}
+                    className="h-3 aspect-square"
+                    tintColor="#757575"
+                  />
+                  <Text
+                    className="text-xs font-pjs-regular text-[#757575]"
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                  >
+                    {twoDecimals(product.distance)} km
+                  </Text>
+                </View>
+              )}
             </View>
             <Text className="text-base font-pjs-bold text-[#FF3B30]">
               {priceToRupiah(product.price)}

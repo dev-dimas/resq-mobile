@@ -58,17 +58,20 @@ function seed() {
 
   for (let index = 1; index <= 60; index++) {
     let categoryName: ProductCategory = "Dessert";
+    let generatedData: ProductNearby;
 
     if (index <= 15) categoryName = "Makanan";
     else if (index <= 30) categoryName = "Minuman";
     else if (index <= 45) categoryName = "Salad";
 
-    data.push(
-      generateProductData({
+    do {
+      generatedData = generateProductData({
         categoryName,
         isNear: faker.datatype.boolean({ probability: 0.66 }),
-      })
-    );
+      });
+    } while (data.find((product) => product.name === generatedData.name));
+
+    data.push(generatedData);
   }
 
   saveDataToFile(data);

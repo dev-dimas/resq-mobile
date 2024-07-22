@@ -11,7 +11,7 @@ export default function SubscribeButton({
     <TouchableOpacity
       activeOpacity={0.7}
       className={cn(
-        "w-[115px] flex justify-center items-center rounded-lg px-2 py-2 border",
+        "flex justify-center items-center rounded-lg w-[105px] py-2 border",
         type === "subscribe"
           ? "bg-[#FFFFFF] border-[#FF3B30]"
           : "bg-[#FF3B30]/20 border-[#FF3B30]/20"

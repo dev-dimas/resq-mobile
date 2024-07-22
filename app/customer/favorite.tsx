@@ -1,12 +1,10 @@
-import BackButton from "@/components/back-button";
 import ButtonDeleteFavorites from "@/components/customer/button-delete-favorites";
 import ProductCard from "@/components/customer/product-card";
 import UserLayout from "@/components/layout/user-layout";
 import { FlashList } from "@shopify/flash-list";
 import { FavoriteProduct, favoritesProduct } from "data/favorite.data";
 import { Stack } from "expo-router";
-import { Dimensions, ScrollView, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "react-native";
 import { WebResponse } from "types/web-response.type";
 
 export default function Favorite() {
