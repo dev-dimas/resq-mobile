@@ -19,7 +19,7 @@ export default function Index() {
       <Link href={"/customer/subscription"} className="text-lg font-semibold">
         Customer Subscription
       </Link>
-      <Link href={"/seller/home"} className="text-lg font-semibold">
+      <Link href={"/seller/(auth-seller)/home"} className="text-lg font-semibold">
         Seller Homepage
       </Link>
       <Link href={"/category/not-found"} className="text-lg font-semibold">

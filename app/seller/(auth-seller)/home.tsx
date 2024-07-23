@@ -7,7 +7,7 @@ import { icons } from "constants/";
 import { ProductNearby } from "data/product.data";
 import { subscriptions } from "data/subscription.data";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -78,6 +78,7 @@ export default function Home() {
           style={{
             columnGap: 10,
           }}
+          onPress={() => router.push("/seller/(auth-seller)/create-product")}
         >
           <Image
             source={icons.plus}

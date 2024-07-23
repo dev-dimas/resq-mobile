@@ -50,6 +50,7 @@ export default function SellerProductCard({
               <TouchableOpacity
                 activeOpacity={0.7}
                 className="p-2 bg-[#FDBF43] rounded-lg w-[30px] h-[30px]"
+                onPress={() => router.push(`/seller/edit-product/${product.id}`)}
               >
                 <Image
                   source={icons.pencil}

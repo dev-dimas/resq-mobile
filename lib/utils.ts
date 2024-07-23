@@ -29,3 +29,9 @@ export function priceToRupiah(str: string | number): string {
     maximumFractionDigits: 0,
   });
 }
+
+export async function fetchImageFromUri(uri: string): Promise<Blob> {
+  const response = await fetch(uri);
+  const blob = await response.blob();
+  return blob;
+}

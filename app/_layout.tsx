@@ -65,7 +65,7 @@ export default function RootLayout() {
         <Stack.Screen name="product/[id]" />
         <Stack.Screen name="seller/[id]" />
         <Stack.Screen name="product/nearby" />
-        <Stack.Screen name="seller/home" />
+        <Stack.Screen name="seller/(auth-seller)" />
       </Stack>
       <Toast autoHide position="top" visibilityTime={3000} config={toastConfig} />
     </QueryClientProvider>

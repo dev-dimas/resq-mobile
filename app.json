@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -29,7 +27,14 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Aplikasi ini memerlukan izin akses foto untuk memilih profile picture atau gambar produk.",
+          "cameraPermission": "Aplikasi ini memerlukan izin akses kamera untuk memotret profile picture atau gambar produk. "
+        }
+      ]
     ],
     "experiments": {
       "tsconfigPaths": true
