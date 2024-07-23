@@ -1,4 +1,5 @@
 import BackButton from "@/components/back-button";
+import FavoriteButton from "@/components/customer/favorite-button";
 import SubscribeButton from "@/components/customer/subscribe-button";
 import ImageViewer from "@/components/image-viewer";
 import { priceToRupiah } from "@/lib/utils";
@@ -66,6 +67,9 @@ export default function ProductDetail() {
           },
           headerShadowVisible: false,
           headerLeft: () => <BackButton />,
+          headerRight: () => (
+            <FavoriteButton buttonClassname="w-5 h-5 mr-2" imageClassname="w-5 h-5" />
+          ),
         }}
       />
       <SafeAreaView className="h-full min-h-full bg-[#F8F8F9]">

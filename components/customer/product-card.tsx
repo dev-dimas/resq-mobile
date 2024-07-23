@@ -4,6 +4,7 @@ import { ProductNearby } from "data/product.data";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
+import FavoriteButton from "./favorite-button";
 
 type Props = {
   product: ProductNearby;
@@ -60,18 +61,7 @@ export default function ProductCard({
             </Text>
           </View>
           {withFavoriteButton && (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              className="w-5 ml-5"
-              onPress={() => console.log("Fav")}
-            >
-              <Image
-                source={icons.heartFill}
-                contentFit="contain"
-                className="w-5 h-5"
-                tintColor="#FF3B30"
-              />
-            </TouchableOpacity>
+            <FavoriteButton buttonClassname="w-5 ml-5" imageClassname="w-5 h-5" />
           )}
         </View>
       </View>
