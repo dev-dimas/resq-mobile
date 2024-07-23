@@ -1,5 +1,5 @@
 export type Category = {
-  name: string;
+  name: "Makanan" | "Minuman" | "Salad" | "Dessert";
   createdAt: Date;
   updatedAt: Date;
 };

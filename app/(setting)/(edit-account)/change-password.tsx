@@ -8,7 +8,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack } from "expo-router";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Dimensions, ScrollView, Text, View } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ChangePassword() {

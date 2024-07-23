@@ -3,10 +3,12 @@ import { ClassValue } from "clsx";
 import { images } from "constants/";
 import { Image } from "expo-image";
 import * as ExpoImagePicker from "expo-image-picker";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import { Text, TouchableOpacity } from "react-native";
 import Constants from "expo-constants";
+import ModalSelect from "./modal-select";
+import ImageViewer from "./image-viewer";
 
 type Props = {
   label?: string;
@@ -25,9 +27,12 @@ export default function ImagePicker({
   buttonStyles,
   imageStyles,
 }: Props) {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState<boolean>(false);
+
   const pickImage = async (onChange: (...event: any[]) => void) => {
     // No permissions request is necessary for launching the image library
-    let result = await ExpoImagePicker.launchImageLibraryAsync({
+    const result = await ExpoImagePicker.launchImageLibraryAsync({
       mediaTypes: ExpoImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [1, 1],
@@ -61,7 +66,13 @@ export default function ImagePicker({
           <TouchableOpacity
             activeOpacity={0.7}
             className={cn("w-24 h-24 rounded-full", buttonStyles)}
-            onPress={() => pickImage(onChange)}
+            onPress={() => {
+              if (!value) {
+                pickImage(onChange);
+                return;
+              }
+              setIsModalOpen(true);
+            }}
           >
             <Image
               source={value ? { uri: value } : images.camera}
@@ -74,6 +85,32 @@ export default function ImagePicker({
               {error.message}
             </Text>
           )}
+          <ImageViewer
+            images={[{ uri: value }]}
+            isVisible={isImageViewerOpen}
+            setIsVisible={setIsImageViewerOpen}
+            title="Foto Produk"
+          />
+          <ModalSelect
+            isVisible={isModalOpen}
+            selectList={[
+              {
+                title: "Lihat foto",
+                onPress: () => {
+                  setIsModalOpen(false);
+                  setIsImageViewerOpen(true);
+                },
+              },
+              {
+                title: "Ganti foto",
+                onPress: () => {
+                  setIsModalOpen(false);
+                  pickImage(onChange);
+                },
+              },
+            ]}
+            onClose={() => setIsModalOpen(false)}
+          />
         </>
       )}
     />

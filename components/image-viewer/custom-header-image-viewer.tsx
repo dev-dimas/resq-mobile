@@ -6,7 +6,6 @@ type Props = {
   onRequestClose: () => void;
   onRequestEdit?: () => void;
   onRequestDelete?: () => void;
-  imageIndex?: number;
   title: string;
 };
 
@@ -14,7 +13,6 @@ export default function CustomHeaderImageViewer({
   onRequestClose,
   onRequestEdit,
   onRequestDelete,
-  imageIndex,
   title,
 }: Props) {
   return (

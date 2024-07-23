@@ -3,9 +3,8 @@ import { icons } from "constants/";
 import { ProductNearby } from "data/product.data";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import Modal from "../modal";
 
 type Props = {
   product: ProductNearby;

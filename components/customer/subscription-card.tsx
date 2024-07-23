@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Image } from "expo-image";
-import { SubscriptionWithProducts, subscriptions } from "data/subscription.data";
+import { SubscriptionWithProducts } from "data/subscription.data";
 import { icons } from "constants/";
 import SubscribeButton from "./subscribe-button";
 import { router } from "expo-router";

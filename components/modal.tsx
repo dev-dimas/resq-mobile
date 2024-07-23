@@ -1,7 +1,7 @@
 import { icons } from "constants/";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
-import { Pressable, Modal as RNModal, Text, TouchableOpacity, View } from "react-native";
+import { Modal as RNModal, Text, TouchableOpacity, View } from "react-native";
 
 type Props = {
   isVisible: boolean;

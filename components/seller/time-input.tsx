@@ -10,7 +10,7 @@ type Props = {
   label?: string;
   name: string;
   control: Control<FieldValues>;
-  defaultValue?: string;
+  defaultValue?: Date;
   containerStyles?: ClassValue;
   disabled?: boolean;
 };

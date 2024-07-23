@@ -1,8 +1,7 @@
-import ImageView from "react-native-image-viewing";
-import CustomHeaderImageViewer from "./custom-header-image-viewer";
-import { ImageSource } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import { ImageRequireSource, ImageURISource } from "react-native";
+import ImageView from "react-native-image-viewing";
+import CustomHeaderImageViewer from "./custom-header-image-viewer";
 
 export default function ImageViewer({
   images,
