@@ -40,8 +40,8 @@ export default function EditProduct() {
     formData.append("price", data.price);
     formData.append("categoryName", data.categoryName);
     formData.append("images", await fetchImageFromUri(data.images));
-    formData.append("startTime", dayjs(data.startTime).format("HH:mm"));
-    formData.append("endTime", dayjs(data.endTime).format("HH:mm"));
+    formData.append("startTime", dayjs(data.startTime).toISOString());
+    formData.append("endTime", dayjs(data.endTime).toISOString());
     formData.append("isDaily", JSON.stringify(data.isDaily));
   };
 

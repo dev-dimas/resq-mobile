@@ -7,7 +7,7 @@ export default function Index() {
       <Link href={"/(auth)/sign-in"} className="text-lg font-semibold">
         Sign-In
       </Link>
-      <Link href={"/(auth)/sign-in"} className="text-lg font-semibold">
+      <Link href={"/(auth)/sign-up"} className="text-lg font-semibold">
         Sign-Up
       </Link>
       <Link href={"/customer/home"} className="text-lg font-semibold">

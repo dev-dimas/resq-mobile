@@ -51,7 +51,9 @@ const TimeInput = React.memo(
                   mode="time"
                   value={value === "" ? new Date() : new Date(value)}
                   onChange={(e, selectedTime) => {
-                    if (e.type === "set") onChange(selectedTime);
+                    if (e.type === "set") {
+                      onChange(selectedTime);
+                    }
                     setShowTimePicker(false);
                   }}
                   onTouchCancel={() => console.log("Cancel")}

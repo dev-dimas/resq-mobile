@@ -5,7 +5,7 @@ import { TSignUpSchema, signUpSchema } from "@/schemas/form/auth";
 import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -43,6 +43,8 @@ export default function SignUp() {
       if (signInResponse.data) {
         await SecureStore.setItemAsync("token", signInResponse.data.token);
         setToken(signInResponse.data.token);
+        const isCustomer = JSON.parse(data.asCustomer);
+        router.replace(isCustomer ? "/customer/home" : "/seller/home");
       }
       return;
     }
@@ -112,7 +114,7 @@ export default function SignUp() {
           containerStyles="bg-[#FF3B30] w-full mt-[22px]"
           isLoading={signUpRequest.isPending || signInRequest.isPending}
         >
-          Masuk
+          Daftar
         </Button>
       </FormProvider>
 

@@ -28,7 +28,7 @@ export default function Location({ selectedCoordinate }: Props) {
         return;
       }
 
-      let currentLocation = await ExpoLocation.getCurrentPositionAsync({});
+      let currentLocation = await ExpoLocation.getCurrentPositionAsync();
       setLocation({
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
@@ -53,6 +53,8 @@ export default function Location({ selectedCoordinate }: Props) {
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
   };
+
+  console.log(location);
 
   return (
     <View style={styles.container}>
