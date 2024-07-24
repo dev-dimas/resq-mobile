@@ -32,7 +32,13 @@
         "expo-image-picker",
         {
           "photosPermission": "Aplikasi ini memerlukan izin akses foto untuk memilih profile picture atau gambar produk.",
-          "cameraPermission": "Aplikasi ini memerlukan izin akses kamera untuk memotret profile picture atau gambar produk. "
+          "cameraPermission": "Aplikasi ini memerlukan izin akses kamera untuk memotret profile picture atau gambar produk."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Izinkan $(PRODUCT_NAME) untuk mengakses GPS."
         }
       ]
     ],

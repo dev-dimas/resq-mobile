@@ -5,6 +5,7 @@ export default function SettingLayout() {
     <Stack screenOptions={{ headerShown: false, animation: "ios" }}>
       <Stack.Screen name="setting" />
       <Stack.Screen name="(edit-account)" />
+      <Stack.Screen name="location" />
     </Stack>
   );
 }

@@ -33,6 +33,7 @@ export default function Home() {
           <TouchableOpacity
             activeOpacity={0.7}
             className="flex flex-row items-center justify-between w-[82%]"
+            onPress={() => router.navigate("/location")}
           >
             <View className="flex flex-row items-center w-full gap-2">
               <Image

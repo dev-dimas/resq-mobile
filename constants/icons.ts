@@ -2,6 +2,7 @@ import arrowLeft from "../assets/icons/arrow-left.png";
 import chevronDown from "../assets/icons/chevron-down.png";
 import chevronLeft from "../assets/icons/chevron-left.png";
 import close from "../assets/icons/close.png";
+import currentLocation from "../assets/icons/current-location.png";
 import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
 import groupFill from "../assets/icons/group-fill.png";
@@ -23,6 +24,7 @@ export default {
   chevronDown,
   chevronLeft,
   close,
+  currentLocation,
   eyeHide,
   eye,
   groupFill,
