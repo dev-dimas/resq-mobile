@@ -1,28 +1,41 @@
+import { updateProduct } from "@/api/seller";
 import BackButton from "@/components/back-button";
 import Button from "@/components/button";
 import Checkbox from "@/components/checkbox";
 import ImagePicker from "@/components/image-picker";
 import InputField from "@/components/input-field";
+import Modal from "@/components/modal";
 import ProductCategoryPicker from "@/components/seller/product-category-picker";
 import TimeInput from "@/components/seller/time-input";
-import { cn, fetchImageFromUri } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { TUpdateProductSchema, updateProductSchema } from "@/schemas/form/product";
+import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProductNearby, products } from "data/product.data";
-import dayjs from "dayjs";
-import { Stack, useLocalSearchParams } from "expo-router";
-import React from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ImagePickerSuccessResult } from "expo-image-picker";
+import { Stack, router, useLocalSearchParams } from "expo-router";
+import useDashboard from "hooks/query/useDashboard";
+import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { Category } from "types/category.type";
-import { Product } from "types/product.type";
 
 export default function EditProduct() {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [productImage, setProductImage] = useState<ImagePickerSuccessResult | null>(null);
+  const { token } = useToken();
+  const { data: seller } = useDashboard();
   let { id } = useLocalSearchParams();
   id = id as string;
-  const product: (ProductNearby & Partial<Pick<Product, "isActive">>) | undefined =
-    products.find((product) => product.id === id);
+  const queryClient = useQueryClient();
+  const updateProductRequest = useMutation({
+    mutationFn: (data: Partial<TUpdateProductSchema>) =>
+      updateProduct({ productId: id, data, productImage, token: token! }),
+  });
+
+  const product = seller?.data.products.find((product) => product.id === id);
 
   const form = useForm({
     resolver: zodResolver(updateProductSchema),
@@ -31,21 +44,50 @@ export default function EditProduct() {
   const { control } = form;
 
   const onSubmit: SubmitHandler<TUpdateProductSchema> = async (data) => {
-    console.log(data);
-    return;
+    try {
+      const response = await updateProductRequest.mutateAsync(data);
 
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("price", data.price);
-    formData.append("categoryName", data.categoryName);
-    formData.append("images", await fetchImageFromUri(data.images));
-    formData.append("startTime", dayjs(data.startTime).toISOString());
-    formData.append("endTime", dayjs(data.endTime).toISOString());
-    formData.append("isDaily", JSON.stringify(data.isDaily));
+      if (!response.data) throw new Error();
+
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil memperbarui produk!",
+      });
+
+      router.back();
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui produk. Coba lagi!",
+      });
+    }
   };
 
-  const handleChangeIsActive = async () => {};
+  const handleChangeIsActive = async () => {
+    try {
+      const response = await updateProductRequest.mutateAsync({
+        isActive: !product?.isActive,
+      });
+
+      if (!response.data) throw new Error();
+
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil memperbarui status produk!",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui status produk. Coba lagi!",
+      });
+    }
+  };
 
   if (!product)
     return (
@@ -76,8 +118,6 @@ export default function EditProduct() {
         </SafeAreaView>
       </>
     );
-
-  product.isActive = true;
 
   return (
     <>
@@ -111,6 +151,8 @@ export default function EditProduct() {
                 name="images"
                 control={control}
                 defaultValue={product.images[0]}
+                setProductImage={setProductImage}
+                disabled={updateProductRequest.isPending}
               />
 
               <FormProvider {...form}>
@@ -120,14 +162,14 @@ export default function EditProduct() {
                   label="Nama Produk"
                   placeholder="Masukkan nama produk"
                   defaultValue={product.name}
-                  // editable
+                  editable={!updateProductRequest.isPending}
                 />
                 <ProductCategoryPicker
                   name="categoryName"
                   control={control}
                   label="Kategori"
                   defaultValue={product.categoryName as Category["name"]}
-                  //   editable
+                  editable={!updateProductRequest.isPending}
                 />
                 <InputField
                   name="price"
@@ -136,7 +178,7 @@ export default function EditProduct() {
                   defaultValue={product.price}
                   placeholder="Masukkan harga produk"
                   keyboardType="numeric"
-                  // editable
+                  editable={!updateProductRequest.isPending}
                 />
                 <InputField
                   name="description"
@@ -146,41 +188,51 @@ export default function EditProduct() {
                   placeholder="Masukkan deskripsi produk"
                   multiline
                   numberOfLines={4}
-                  // editable
+                  editable={!updateProductRequest.isPending}
                 />
                 <View className="flex-row" style={{ columnGap: 22 }}>
                   <TimeInput
                     name="startTime"
                     control={control}
                     label="Jam Mulai"
-                    defaultValue={new Date()}
+                    defaultValue={new Date(product.startTime)}
                     containerStyles="flex-1"
+                    disabled={updateProductRequest.isPending}
                   />
                   <TimeInput
                     name="endTime"
                     control={control}
                     label="Jam Selesai"
-                    defaultValue={new Date()}
+                    defaultValue={new Date(product.endTime)}
                     containerStyles="flex-1"
+                    disabled={updateProductRequest.isPending}
                   />
                 </View>
-                <Checkbox name="isDaily" control={control} text="Jual Setiap Hari" />
+                <Checkbox
+                  name="isDaily"
+                  defaultValue={product.isDaily}
+                  control={control}
+                  text="Jual Setiap Hari"
+                  disabled={updateProductRequest.isPending}
+                />
 
                 {/* Button action */}
                 <View className="w-full mt-[31px]" style={{ rowGap: 8 }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={handleChangeIsActive}
+                    onPress={() => setIsModalOpen(true)}
                     className={cn(
                       "items-center px-2 py-3 border-2 rounded-lg",
                       product.isActive ? "border-[#FF3B30]" : "border-[#49CB5C]"
                     )}
+                    disabled={updateProductRequest.isPending}
                   >
                     <Text
                       className={cn(
                         "text-sm font-pjs-bold",
                         product.isActive ? "text-[#FF3B30]" : "text-[#49CB5C]"
                       )}
+                      disabled={updateProductRequest.isPending}
                     >
                       {product.isActive ? "Hentikan Penjualan" : "Aktifkan Penjualan"}
                     </Text>
@@ -188,7 +240,7 @@ export default function EditProduct() {
                   <Button
                     onSubmit={onSubmit}
                     containerStyles="bg-[#FDBF43] w-full"
-                    //   isLoading={}
+                    isLoading={updateProductRequest.isPending}
                   >
                     Perbarui
                   </Button>
@@ -198,6 +250,19 @@ export default function EditProduct() {
           </View>
         </ScrollView>
       </SafeAreaView>
+      <Modal
+        isVisible={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={product.isActive ? "Hentikan Penjualan" : "Aktifkan Penjualan"}
+        description={`Apakah kamu yakin ingin ${product.isActive ? "menghentikan" : "mengaktifkan"} penjualan produk ini?`}
+        titleConfirm={product.isActive ? "Hentikan" : "Aktifkan"}
+        onConfirm={async () => {
+          await handleChangeIsActive();
+          setIsModalOpen(false);
+        }}
+        buttonVariant={product.isActive ? "red" : "green"}
+        isLoading={updateProductRequest.isPending}
+      />
     </>
   );
 }

@@ -1,9 +1,12 @@
+import { deleteProduct } from "@/api/seller";
 import UserLayout from "@/components/layout/user-layout";
 import Modal from "@/components/modal";
 import SellerProductCard from "@/components/seller/seller-product-card";
 import UserLocation from "@/components/user-location";
 import { cn, getGreeting } from "@/lib/utils";
+import { useToken } from "@/store/useToken";
 import { FlashList } from "@shopify/flash-list";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { icons } from "constants/";
 import env from "env";
 import { Image } from "expo-image";
@@ -11,12 +14,42 @@ import { Link, router } from "expo-router";
 import useDashboard from "hooks/query/useDashboard";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { Product } from "types/product.type";
 
 export default function Home() {
   const { data } = useDashboard();
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
   const [productToBeDelete, setProductToBeDelete] = useState<Product | null>(null);
+  const { token } = useToken();
+  const queryClient = useQueryClient();
+  const deleteProductRequest = useMutation({
+    mutationFn: () => deleteProduct(productToBeDelete!.id, token!),
+  });
+
+  const handleDeleteProduct = async () => {
+    try {
+      if (!productToBeDelete) return;
+
+      await deleteProductRequest.mutateAsync();
+
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+
+      setIsModalDeleteOpen(false);
+      setProductToBeDelete(null);
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Produk berhasil dihapus",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Produk gagal dihapus",
+      });
+    }
+  };
 
   return (
     <UserLayout containerClassname="pt-5">
@@ -125,7 +158,8 @@ export default function Home() {
           setIsModalDeleteOpen(false);
           setProductToBeDelete(null);
         }}
-        onConfirm={() => {}}
+        onConfirm={handleDeleteProduct}
+        isLoading={deleteProductRequest.isPending}
       />
     </UserLayout>
   );

@@ -60,26 +60,6 @@ const TimeInput = React.memo(
                   is24Hour
                 />
               )}
-              {/* <TextInput
-                  placeholder={props.placeholder || label}
-                  placeholderTextColor={"#757575"}
-                  style={{
-                    includeFontPadding: false,
-                    textAlignVertical: props.multiline ? "top" : "center",
-                  }}
-                  className={cn(
-                    "w-full px-3 min-h-[48px] py-2 rounded-lg bg-[#EFEFEF] text-sm font-pjs-regular p-3 border border-[#EFEFEF]",
-                    error && "bg-red-100 border-red-500"
-                  )}
-                  value={value}
-                  onChangeText={
-                    props.keyboardType === "numeric"
-                      ? (text) => onChange(text.replace(/[^0-9]/g, ""))
-                      : onChange
-                  }
-                  secureTextEntry={type === "password" && !showText}
-                  {...props}
-                /> */}
             </View>
             {error && (
               <Text className="ml-1 text-xs text-red-500 font-pjs-semibold">

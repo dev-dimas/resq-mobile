@@ -23,7 +23,7 @@ export default function AccountProvider({ children, fontsLoaded, fontsError }: P
 
   useEffect(() => {
     (async () => {
-      if (!token) return;
+      if (!token || !data) return;
 
       if (data?.data.latitude && data?.data.longitude) return;
 

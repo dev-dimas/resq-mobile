@@ -35,5 +35,6 @@ export const updateProductSchema = z.object({
   startTime: z.date({ message: "Jam mulai tidak boleh kosong" }),
   endTime: z.date({ message: "Jam selesai tidak boleh kosong" }),
   isDaily: z.boolean(),
+  isActive: z.boolean().optional(),
 });
 export type TUpdateProductSchema = z.infer<typeof updateProductSchema>;

@@ -5,7 +5,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 type Props = {
   name: string;
   control: Control<FieldValues>;
-  defaultValue?: string;
+  defaultValue?: boolean;
 } & React.ComponentProps<typeof BouncyCheckbox>;
 
 export default function Checkbox({ control, name, defaultValue, ...props }: Props) {
@@ -40,6 +40,7 @@ export default function Checkbox({ control, name, defaultValue, ...props }: Prop
           {...props}
           isChecked={value}
           onPress={onChange}
+          disabled={props.disabled}
         />
       )}
     />

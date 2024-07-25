@@ -22,6 +22,7 @@ export default function useDashboard() {
   }> = useQuery({
     queryKey: ["dashboard", token],
     queryFn: () => fetchDashboard(token!),
+    staleTime: 2000,
     enabled: !!token,
   });
 

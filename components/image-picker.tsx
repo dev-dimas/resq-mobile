@@ -19,10 +19,14 @@ type Props = {
   defaultValue?: string | null;
   buttonStyles?: ClassValue;
   imageStyles?: ClassValue;
+  disabled?: boolean;
   handleSave?: (
     image: ExpoImagePicker.ImagePickerSuccessResult
   ) => Promise<{ message: string }>;
   handleDelete?: () => Promise<void>;
+  setProductImage?: React.Dispatch<
+    React.SetStateAction<ExpoImagePicker.ImagePickerSuccessResult | null>
+  >;
 };
 
 export default function ImagePicker({
@@ -33,8 +37,10 @@ export default function ImagePicker({
   defaultValue = null,
   buttonStyles,
   imageStyles,
+  disabled = false,
   handleSave,
   handleDelete,
+  setProductImage,
 }: Props) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState<boolean>(false);
@@ -53,6 +59,7 @@ export default function ImagePicker({
         const uri = result.assets[0].uri;
 
         if (isUserAvatar && handleSave) await handleSave(result);
+        if (setProductImage) setProductImage(result);
 
         onChange(uri);
       } catch (error) {
@@ -83,6 +90,7 @@ export default function ImagePicker({
           <TouchableOpacity
             activeOpacity={0.7}
             className={cn("w-24 h-24 rounded-full", buttonStyles)}
+            disabled={disabled}
             onPress={() => {
               if (!value) {
                 pickImage(onChange);

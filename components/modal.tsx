@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { icons } from "constants/";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
@@ -10,6 +11,8 @@ type Props = {
   titleConfirm: string;
   onClose: () => void;
   onConfirm: () => void;
+  buttonVariant?: "red" | "green";
+  isLoading?: boolean;
 };
 
 export default function Modal({
@@ -19,6 +22,8 @@ export default function Modal({
   titleConfirm,
   onClose,
   onConfirm,
+  buttonVariant = "red",
+  isLoading = false,
 }: Props) {
   return (
     <>
@@ -58,14 +63,18 @@ export default function Modal({
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.7}
-                className="px-3 py-2 bg-[#FF3B30] rounded-lg"
+                className={cn(
+                  "px-3 py-2 rounded-lg",
+                  buttonVariant === "red" ? "bg-[#FF3B30]" : "bg-[#49CB5C]"
+                )}
                 onPress={onConfirm}
+                disabled={isLoading}
               >
                 <Text
                   className="text-sm text-white font-pjs-medium"
                   style={{ includeFontPadding: false }}
                 >
-                  {titleConfirm}
+                  {isLoading ? "Loading..." : titleConfirm}
                 </Text>
               </TouchableOpacity>
             </View>

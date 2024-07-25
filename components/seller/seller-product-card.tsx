@@ -1,5 +1,6 @@
 import { priceToRupiah } from "@/lib/utils";
 import { icons } from "constants/";
+import env from "env";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Dispatch, SetStateAction } from "react";
@@ -17,16 +18,16 @@ export default function SellerProductCard({
   setIsModalDeleteOpen,
   setProductToBeDelete,
 }: Props) {
+  console.log(product);
   return (
     <>
       <TouchableOpacity
         activeOpacity={1}
         className="w-full p-4 my-1 overflow-hidden bg-white border border-opacity-50 rounded-lg border-slate-200 h-[113px]"
-        //   onPress={() => router.push(`/product/${product.id}`)}
       >
         <View className="flex flex-row items-center gap-3">
           <Image
-            source={product.images[0]}
+            source={env.EXPO_PUBLIC_API_URL + product.images[0]}
             contentFit="cover"
             className="w-[70px] h-[70px] rounded-full"
           />
