@@ -22,11 +22,10 @@ export default function ImageViewer({
         imageIndex={0}
         visible={isVisible}
         onRequestClose={() => setIsVisible(false)}
-        HeaderComponent={({ imageIndex }) => (
+        HeaderComponent={() => (
           <CustomHeaderImageViewer
             onRequestClose={() => setIsVisible(false)}
             title={title}
-            imageIndex={imageIndex}
           />
         )}
       />

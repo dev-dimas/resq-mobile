@@ -4,16 +4,17 @@ import SellerProductCard from "@/components/seller/seller-product-card";
 import { cn, getGreeting } from "@/lib/utils";
 import { FlashList } from "@shopify/flash-list";
 import { icons } from "constants/";
-import { ProductNearby } from "data/product.data";
-import { subscriptions } from "data/subscription.data";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
+import useDashboard from "hooks/query/useDashboard";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { Product } from "types/product.type";
 
 export default function Home() {
+  const { data } = useDashboard();
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
-  const [productToBeDelete, setProductToBeDelete] = useState<ProductNearby | null>(null);
+  const [productToBeDelete, setProductToBeDelete] = useState<Product | null>(null);
 
   return (
     <UserLayout containerClassname="pt-5">
@@ -28,10 +29,10 @@ export default function Home() {
               numberOfLines={1}
               style={{ includeFontPadding: false }}
             >
-              {subscriptions[0].name}
+              {data?.data.name}
             </Text>
             <Text className="font-pjs-bold text-xs text-[#757575] mt-1">
-              Jumlah Subscriber : 12
+              Jumlah Subscriber : {data?.data.subscriber}
             </Text>
           </View>
 
@@ -93,7 +94,7 @@ export default function Home() {
         <View className="flex-1 mt-4">
           <Text className="font-pjs-bold text-base text-[#1B1717]">Produk Kamu</Text>
           <FlashList
-            data={[...subscriptions[0].products]}
+            data={data?.data.products}
             estimatedItemSize={109}
             estimatedListSize={{ width: 364, height: 805 }}
             renderItem={({ item }) => {
@@ -107,7 +108,7 @@ export default function Home() {
             }}
             ListEmptyComponent={
               <Text className="text-center font-pjs-regular">
-                Etalase penjual masih kosong!
+                Etalase penjualan kamu masih kosong!
               </Text>
             }
             contentContainerStyle={{

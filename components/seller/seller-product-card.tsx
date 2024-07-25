@@ -1,15 +1,15 @@
 import { priceToRupiah } from "@/lib/utils";
 import { icons } from "constants/";
-import { ProductNearby } from "data/product.data";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Dispatch, SetStateAction } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { Product } from "types/product.type";
 
 type Props = {
-  product: ProductNearby;
+  product: Product;
   setIsModalDeleteOpen: Dispatch<SetStateAction<boolean>>;
-  setProductToBeDelete: Dispatch<SetStateAction<ProductNearby | null>>;
+  setProductToBeDelete: Dispatch<SetStateAction<Product | null>>;
 };
 
 export default function SellerProductCard({

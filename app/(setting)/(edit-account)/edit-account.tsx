@@ -1,28 +1,111 @@
+import { deleteAvatarAccount, postAvatarAccount, postEditAccount } from "@/api/account";
 import BackButton from "@/components/back-button";
 import Button from "@/components/button";
-import ImageViewer from "@/components/image-viewer";
+import ImagePicker from "@/components/image-picker";
 import InputField from "@/components/input-field";
+import { queryClient } from "@/lib/query-client";
 import { TEditAccountSchema, editAccountSchema } from "@/schemas/form/edit-account";
+import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { images } from "constants/";
-import { Image } from "expo-image";
+import { useMutation } from "@tanstack/react-query";
+import { ImagePickerSuccessResult } from "expo-image-picker";
 import { Stack, router } from "expo-router";
+import useDashboard from "hooks/query/useDashboard";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function EditAccount() {
   const [isImageViewerVisible, setIsImageViewerVisible] = useState<boolean>(false);
+  const { data: dashboardData } = useDashboard();
+  const { token } = useToken();
+
+  const editAccountRequest = useMutation({
+    mutationFn: (data: TEditAccountSchema) => postEditAccount(data, token!),
+  });
+
+  const updateAvatarRequest = useMutation({
+    mutationFn: (image: ImagePickerSuccessResult) => postAvatarAccount(image, token!),
+  });
+
+  const deleteAvatarRequest = useMutation({
+    mutationFn: () => deleteAvatarAccount(token!),
+  });
 
   const form = useForm({
     resolver: zodResolver(editAccountSchema),
   });
 
-  const { control } = form;
+  const {
+    control,
+    formState: { isDirty },
+  } = form;
 
   const onSubmit: SubmitHandler<TEditAccountSchema> = async (data) => {
-    console.log(data);
+    try {
+      if (!isDirty) {
+        router.navigate(
+          typeof dashboardData?.data.subscriber === "number"
+            ? "/seller/home"
+            : "/customer/home"
+        );
+        return;
+      }
+
+      await editAccountRequest.mutateAsync(data);
+
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+
+      Toast.show({
+        type: "success",
+        text1: "Sukses",
+        text2: "Akun berhasil diperbarui",
+      });
+
+      router.navigate(
+        typeof dashboardData?.data.subscriber === "number"
+          ? "/seller/home"
+          : "/customer/home"
+      );
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui foto profie. Coba lagi!",
+      });
+    }
+  };
+
+  const handleUpdateAvatar = async (avatar: ImagePickerSuccessResult) => {
+    try {
+      const response = await updateAvatarRequest.mutateAsync(avatar);
+
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+
+      return response;
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui akun. Coba lagi!",
+      });
+      throw error;
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    try {
+      await deleteAvatarRequest.mutateAsync();
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui foto profie. Coba lagi!",
+      });
+    }
   };
 
   return (
@@ -53,21 +136,18 @@ export default function EditAccount() {
             }}
           >
             <View>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => setIsImageViewerVisible(true)}
-              >
-                <Image
-                  source={images.donutChocolate}
-                  contentFit="cover"
-                  className="w-48 rounded-full aspect-square"
-                />
-              </TouchableOpacity>
-              <ImageViewer
-                images={[images.donutChocolate]}
-                title="Foto Profile"
-                isVisible={isImageViewerVisible}
-                setIsVisible={setIsImageViewerVisible}
+              <ImagePicker
+                name="avatar"
+                control={control}
+                buttonStyles="w-48 h-48 border-2 border-[#EFEFEF]"
+                imageStyles="w-48 h-48"
+                isUserAvatar
+                viewerTitle="Foto Profile"
+                defaultValue={dashboardData?.data.avatar}
+                handleSave={(image: ImagePickerSuccessResult) =>
+                  handleUpdateAvatar(image)
+                }
+                handleDelete={handleDeleteAvatar}
               />
             </View>
 
@@ -79,14 +159,14 @@ export default function EditAccount() {
                     name="name"
                     control={control}
                     label="Nama"
-                    defaultValue="Dimas Maulana"
+                    defaultValue={dashboardData?.data.name}
                     // editable
                   />
                   <InputField
                     name="email"
                     control={control}
                     label="Email"
-                    defaultValue="lLqg0@example.com"
+                    defaultValue={dashboardData?.data.email}
                     // editable
                   />
                 </View>

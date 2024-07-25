@@ -1,7 +1,5 @@
 import { TSignInSchema, TSignUpSchema } from "@/schemas/form/auth";
-import { CoreAPI } from "./core";
-
-const coreApi = new CoreAPI();
+import { coreApi } from "./core";
 
 export async function postSignUp(data: Omit<TSignUpSchema, "confirmPassword">) {
   const result = await coreApi.fetch({
@@ -22,5 +20,15 @@ export async function postSignIn(data: TSignInSchema) {
     method: "POST",
     data,
   });
+  return result;
+}
+
+export async function fetchDashboard(token: string) {
+  const result = await coreApi.fetch({
+    token,
+    url: "/account",
+    method: "GET",
+  });
+
   return result;
 }

@@ -1,7 +1,18 @@
-import { Link } from "expo-router";
+import { useToken } from "@/store/useToken";
+import { Link, Redirect, router } from "expo-router";
+import useDashboard from "hooks/query/useDashboard";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
+  const { token } = useToken();
+  const { data } = useDashboard();
+
+  if (token && data?.data) {
+    const href =
+      typeof data.data.subscriber === "number" ? "/seller/home" : "/customer/home";
+    return <Redirect href={href} />;
+  }
+
   return (
     <SafeAreaView className="flex gap-y-2">
       <Link href={"/(auth)/sign-in"} className="text-lg font-semibold">

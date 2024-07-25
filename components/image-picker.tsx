@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ClassValue } from "clsx";
-import { images } from "constants/";
+import { icons, images } from "constants/";
 import { Image } from "expo-image";
 import * as ExpoImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
@@ -9,29 +9,38 @@ import { Text, TouchableOpacity } from "react-native";
 import Constants from "expo-constants";
 import ModalSelect from "./modal-select";
 import ImageViewer from "./image-viewer";
+import env from "env";
 
 type Props = {
-  label?: string;
   name: string;
   control: Control<FieldValues>;
-  type?: "text" | "password";
+  viewerTitle?: string;
+  isUserAvatar?: boolean;
   defaultValue?: string | null;
   buttonStyles?: ClassValue;
   imageStyles?: ClassValue;
+  handleSave?: (
+    image: ExpoImagePicker.ImagePickerSuccessResult
+  ) => Promise<{ message: string }>;
+  handleDelete?: () => Promise<void>;
 };
 
 export default function ImagePicker({
   name,
   control,
+  viewerTitle = "Foto Produk",
+  isUserAvatar = false,
   defaultValue = null,
   buttonStyles,
   imageStyles,
+  handleSave,
+  handleDelete,
 }: Props) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState<boolean>(false);
+  const imagePlaceholder = isUserAvatar ? icons.user : images.camera;
 
   const pickImage = async (onChange: (...event: any[]) => void) => {
-    // No permissions request is necessary for launching the image library
     const result = await ExpoImagePicker.launchImageLibraryAsync({
       mediaTypes: ExpoImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -40,7 +49,15 @@ export default function ImagePicker({
     });
 
     if (!result.canceled) {
-      onChange(result.assets[0].uri);
+      try {
+        const uri = result.assets[0].uri;
+
+        if (isUserAvatar && handleSave) await handleSave(result);
+
+        onChange(uri);
+      } catch (error) {
+        return;
+      }
     }
   };
 
@@ -60,7 +77,7 @@ export default function ImagePicker({
     <Controller
       name={name}
       control={control}
-      defaultValue={defaultValue || ""}
+      defaultValue={defaultValue ? env.EXPO_PUBLIC_API_URL + defaultValue : ""}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <>
           <TouchableOpacity
@@ -75,7 +92,7 @@ export default function ImagePicker({
             }}
           >
             <Image
-              source={value ? { uri: value } : images.camera}
+              source={value ? { uri: value } : imagePlaceholder}
               className={cn("w-24 h-24 rounded-full", imageStyles)}
               contentFit="cover"
             />
@@ -89,7 +106,7 @@ export default function ImagePicker({
             images={[{ uri: value }]}
             isVisible={isImageViewerOpen}
             setIsVisible={setIsImageViewerOpen}
-            title="Foto Produk"
+            title={viewerTitle}
           />
           <ModalSelect
             isVisible={isModalOpen}
@@ -100,6 +117,7 @@ export default function ImagePicker({
                   setIsModalOpen(false);
                   setIsImageViewerOpen(true);
                 },
+                isAvatarDeleteMenu: false,
               },
               {
                 title: "Ganti foto",
@@ -107,9 +125,22 @@ export default function ImagePicker({
                   setIsModalOpen(false);
                   pickImage(onChange);
                 },
+                isAvatarDeleteMenu: false,
+              },
+              {
+                title: "Hapus foto",
+                onPress: async () => {
+                  if (!handleDelete) return;
+                  await handleDelete().then(() => {
+                    onChange(null);
+                  });
+                  setIsModalOpen(false);
+                },
+                isAvatarDeleteMenu: true,
               },
             ]}
             onClose={() => setIsModalOpen(false)}
+            isUserAvatar={isUserAvatar}
           />
         </>
       )}

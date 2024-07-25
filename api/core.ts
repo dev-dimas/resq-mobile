@@ -4,6 +4,7 @@ type TMethodRequest = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 type TFetchOptions<T extends TMethodRequest> = T extends "GET"
   ? {
       token?: string;
+      prefix?: string;
       method: "GET";
       url: string;
       data?: never;
@@ -11,15 +12,17 @@ type TFetchOptions<T extends TMethodRequest> = T extends "GET"
     }
   : {
       token?: string;
+      prefix?: string;
       method: Exclude<T, "GET">;
       url: string;
       data: any;
       isFormData?: boolean;
     };
 
-export class CoreAPI {
+class CoreAPI {
   async fetch<T extends TMethodRequest>({
     token,
+    prefix = "/api",
     method = "GET",
     url,
     data,
@@ -44,8 +47,9 @@ export class CoreAPI {
           authorization: `Bearer ${token}`,
         };
       }
+      console.log(data);
 
-      const res = await fetch(`${env.EXPO_PUBLIC_API_URL}${url}`, {
+      const res = await fetch(`${env.EXPO_PUBLIC_API_URL}${prefix}${url}`, {
         method,
         headers,
         body: isFormData ? data : JSON.stringify(data),
@@ -53,9 +57,17 @@ export class CoreAPI {
 
       const json = await res.json();
 
+      console.log(json);
+      if (res.status !== 200 && res.status !== 201) {
+        throw new Error(json.message);
+      }
+
       return json;
     } catch (error) {
       console.log("Error Fetch : ", error);
+      throw error;
     }
   }
 }
+
+export const coreApi = new CoreAPI();

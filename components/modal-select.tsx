@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { icons } from "constants/";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
@@ -8,11 +9,18 @@ type Props = {
   selectList: {
     title: string;
     onPress: () => void;
+    isAvatarDeleteMenu?: boolean;
   }[];
   onClose: () => void;
+  isUserAvatar?: boolean;
 };
 
-export default function ModalSelect({ isVisible, selectList, onClose }: Props) {
+export default function ModalSelect({
+  isVisible,
+  selectList,
+  onClose,
+  isUserAvatar = false,
+}: Props) {
   return (
     <>
       <StatusBar backgroundColor={isVisible ? "#00000066" : undefined} animated={false} />
@@ -28,7 +36,10 @@ export default function ModalSelect({ isVisible, selectList, onClose }: Props) {
               {selectList.map((item, index) => (
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  className="items-center px-2 py-3 border rounded-md border-black/30"
+                  className={cn(
+                    "items-center px-2 py-3 border rounded-md border-black/30",
+                    item.isAvatarDeleteMenu && !isUserAvatar && "hidden"
+                  )}
                   key={index}
                   onPress={item.onPress}
                 >

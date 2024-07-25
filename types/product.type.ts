@@ -6,8 +6,8 @@ export type Product = {
   description: string;
   price: string;
   images: string[];
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
   isDaily: boolean;
   isActive: boolean;
   createdAt: Date;
