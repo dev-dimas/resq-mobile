@@ -32,3 +32,14 @@ export async function fetchDashboard(token: string) {
 
   return result;
 }
+
+export async function logout(token: string) {
+  const result = await coreApi.fetch({
+    token,
+    url: "/account/logout",
+    method: "POST",
+    data: {},
+  });
+
+  return result;
+}

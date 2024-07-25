@@ -1,6 +1,6 @@
 import { updateLocation } from "@/api/account";
 import { useToken } from "@/store/useToken";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import { SplashScreen } from "expo-router";
 import useDashboard from "hooks/query/useDashboard";
@@ -20,6 +20,7 @@ export default function AccountProvider({ children, fontsLoaded, fontsError }: P
     mutationFn: (data: { latitude: number; longitude: number }) =>
       updateLocation(data, token!),
   });
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     (async () => {
@@ -35,14 +36,17 @@ export default function AccountProvider({ children, fontsLoaded, fontsError }: P
         return;
       }
 
-      const currentLocation = await Location.getCurrentPositionAsync();
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: 4,
+      });
       await updateLocationRequest.mutateAsync({
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, data]);
 
   useEffect(() => {
     if (fontsError) throw fontsError;

@@ -1,8 +1,12 @@
 import TabIcon from "@/components/layout/tabs-icons";
 import { icons } from "@/constants";
-import { Tabs } from "expo-router";
+import { useToken } from "@/store/useToken";
+import { Redirect, Tabs } from "expo-router";
 
 export default function CustomerLayout() {
+  const { token } = useToken();
+  if (!token) return <Redirect href={"/"} />;
+
   return (
     <>
       <Tabs

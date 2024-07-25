@@ -1,16 +1,18 @@
 import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
 import { cn } from "@/lib/utils";
+import { useToken } from "@/store/useToken";
 import { FlashList } from "@shopify/flash-list";
 import { icons } from "constants/";
 import { ProductNearby, products as dataProduct } from "data/product.data";
 import { Image } from "expo-image";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Search() {
+  const { token } = useToken();
   const [keyword, setKeyword] = useState<string>("");
   const [products, setProducts] = useState<ProductNearby[]>();
 
@@ -23,6 +25,8 @@ export default function Search() {
       );
     }
   }, [keyword]);
+
+  if (!token) return <Redirect href={"/"} />;
 
   return (
     <>

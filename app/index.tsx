@@ -1,15 +1,17 @@
 import { useToken } from "@/store/useToken";
-import { Link, Redirect } from "expo-router";
+import { Link, Redirect, useRootNavigationState } from "expo-router";
 import useDashboard from "hooks/query/useDashboard";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const { token } = useToken();
   const { data } = useDashboard();
+  const rootNavigationState = useRootNavigationState();
 
   if (token && data?.data) {
     const href =
       typeof data.data.subscriber === "number" ? "/seller/home" : "/customer/home";
+    if (!rootNavigationState?.key) return null;
     return <Redirect href={href} />;
   }
 

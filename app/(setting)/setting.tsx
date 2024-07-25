@@ -1,17 +1,48 @@
+import { logout } from "@/api/auth";
 import BackButton from "@/components/back-button";
 import Modal from "@/components/modal";
+import SecureStore from "@/lib/secure-store";
+import { useToken } from "@/store/useToken";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { icons } from "constants/";
 import { Image } from "expo-image";
 import { Stack, router } from "expo-router";
 import { useState } from "react";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function Setting() {
   const [isModalLogoutOpen, setIsModalLogoutOpen] = useState<boolean>(false);
+  const { token, setToken } = useToken();
+  const queryClient = useQueryClient();
+  const logoutRequest = useMutation({
+    mutationFn: () => logout(token!),
+  });
 
-  function handleLogout() {
-    console.log("Logout pressed");
+  async function handleLogout() {
+    try {
+      await logoutRequest.mutateAsync().then(() => {
+        setToken(null);
+      });
+      await SecureStore.deleteItemAsync("token");
+      queryClient.clear();
+      router.dismissAll();
+
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil logout!",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal logout. Coba lagi!",
+      });
+    } finally {
+      setIsModalLogoutOpen(false);
+    }
   }
 
   return (
@@ -86,6 +117,7 @@ export default function Setting() {
             title="Keluar"
             description="Apakah anda yakin ingin keluar?"
             titleConfirm="Keluar"
+            isLoading={logoutRequest.isPending}
           />
         </ScrollView>
       </SafeAreaView>

@@ -31,7 +31,7 @@ export default function SignIn() {
     if (signInResponse.data) {
       await SecureStore.setItemAsync("token", signInResponse.data.token);
       setToken(signInResponse.data.token);
-      router.replace(signInResponse.data.isSeller ? "/seller/home" : "/customer/home");
+      router.navigate(signInResponse.data.isSeller ? "/seller/home" : "/customer/home");
       return;
     }
 
