@@ -1,3 +1,4 @@
+import { changePassword } from "@/api/account";
 import BackButton from "@/components/back-button";
 import Button from "@/components/button";
 import InputField from "@/components/input-field";
@@ -5,13 +6,23 @@ import {
   TChangePasswordSchema,
   changePasswordSchema,
 } from "@/schemas/form/change-password";
+import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Stack } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
+import { Stack, router } from "expo-router";
+import useDashboard from "hooks/query/useDashboard";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Dimensions, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function ChangePassword() {
+  const { token } = useToken();
+  const { data: dashboardData } = useDashboard();
+  const changePasswordRequest = useMutation({
+    mutationFn: (data: TChangePasswordSchema) => changePassword(data, token!),
+  });
+
   const form = useForm({
     resolver: zodResolver(changePasswordSchema),
   });
@@ -19,7 +30,33 @@ export default function ChangePassword() {
   const { control } = form;
 
   const onSubmit: SubmitHandler<TChangePasswordSchema> = async (data) => {
-    console.log(data);
+    try {
+      const response = await changePasswordRequest.mutateAsync(data);
+      if (response.error) throw new Error(response.message);
+
+      router.navigate(
+        typeof dashboardData?.data.subscriber === "number"
+          ? "/seller/home"
+          : "/customer/home"
+      );
+
+      Toast.show({
+        type: "success",
+        text1: "Sukses",
+        text2: "Kata sandi berhasil diperbarui",
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "Forbidden") {
+          Toast.show({
+            type: "error",
+            text1: "Gagal",
+            text2: "Kata sandi saat ini tidak sesuai!",
+          });
+        }
+      }
+      return;
+    }
   };
 
   return (

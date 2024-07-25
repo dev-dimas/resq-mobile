@@ -1,4 +1,5 @@
 import { TEditAccountSchema } from "@/schemas/form/edit-account";
+import { TChangePasswordSchema } from "@/schemas/form/change-password";
 import { ImagePickerSuccessResult } from "expo-image-picker";
 import FormData from "form-data";
 import { coreApi } from "./core";
@@ -40,4 +41,17 @@ export async function deleteAvatarAccount(token: string) {
     data: {},
     token: token!,
   });
+
+  return result;
+}
+
+export async function changePassword(data: TChangePasswordSchema, token: string) {
+  const result = await coreApi.fetch({
+    url: "/account/change-password",
+    method: "POST",
+    data,
+    token: token!,
+  });
+
+  return result;
 }
