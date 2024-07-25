@@ -20,9 +20,10 @@ export default function useDashboard() {
     message: string;
     data: DashboardResponse;
   }> = useQuery({
-    queryKey: ["dashboard"],
+    queryKey: ["dashboard", token],
     queryFn: () => fetchDashboard(token!),
     enabled: !!token,
   });
+
   return { ...dashboard };
 }

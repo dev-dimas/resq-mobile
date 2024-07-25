@@ -35,3 +35,10 @@ export async function fetchImageFromUri(uri: string): Promise<Blob> {
   const blob = await response.blob();
   return blob;
 }
+
+export function getAddress(address: string): string {
+  const plusCodeRegex = /^[A-Z0-9]{2,}\+[A-Z0-9]{2,},\s*/;
+  const cleanedAddress = address.replace(plusCodeRegex, "");
+
+  return cleanedAddress;
+}

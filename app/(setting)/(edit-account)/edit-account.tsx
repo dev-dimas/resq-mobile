@@ -3,23 +3,21 @@ import BackButton from "@/components/back-button";
 import Button from "@/components/button";
 import ImagePicker from "@/components/image-picker";
 import InputField from "@/components/input-field";
-import { queryClient } from "@/lib/query-client";
 import { TEditAccountSchema, editAccountSchema } from "@/schemas/form/edit-account";
 import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ImagePickerSuccessResult } from "expo-image-picker";
 import { Stack, router } from "expo-router";
 import useDashboard from "hooks/query/useDashboard";
-import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 export default function EditAccount() {
-  const [isImageViewerVisible, setIsImageViewerVisible] = useState<boolean>(false);
   const { data: dashboardData } = useDashboard();
+  const queryClient = useQueryClient();
   const { token } = useToken();
 
   const editAccountRequest = useMutation({

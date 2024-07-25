@@ -47,7 +47,6 @@ class CoreAPI {
           authorization: `Bearer ${token}`,
         };
       }
-      console.log(data);
 
       const res = await fetch(`${env.EXPO_PUBLIC_API_URL}${prefix}${url}`, {
         method,
@@ -57,7 +56,7 @@ class CoreAPI {
 
       const json = await res.json();
 
-      console.log(json);
+      console.log("LOG FROM CORE.TS", json);
       if (res.status !== 200 && res.status !== 201) {
         throw new Error(json.message);
       }

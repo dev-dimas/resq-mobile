@@ -1,8 +1,7 @@
 import { toastConfig } from "@/components/toast-config";
-import { queryClient } from "@/lib/query-client";
 import { useReactQueryDevTools } from "@dev-plugins/react-query/build/useReactQueryDevTools";
 import NetInfo from "@react-native-community/netinfo";
-import { QueryClientProvider, onlineManager } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, onlineManager } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import AccountProvider from "providers/account-provider";
@@ -10,6 +9,7 @@ import React from "react";
 import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync();
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   useReactQueryDevTools(queryClient);

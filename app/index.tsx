@@ -1,5 +1,5 @@
 import { useToken } from "@/store/useToken";
-import { Link, Redirect, router } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import useDashboard from "hooks/query/useDashboard";
 import { SafeAreaView } from "react-native-safe-area-context";
 

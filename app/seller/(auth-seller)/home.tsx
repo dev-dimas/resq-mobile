@@ -1,9 +1,11 @@
 import UserLayout from "@/components/layout/user-layout";
 import Modal from "@/components/modal";
 import SellerProductCard from "@/components/seller/seller-product-card";
+import UserLocation from "@/components/user-location";
 import { cn, getGreeting } from "@/lib/utils";
 import { FlashList } from "@shopify/flash-list";
 import { icons } from "constants/";
+import env from "env";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import useDashboard from "hooks/query/useDashboard";
@@ -36,8 +38,22 @@ export default function Home() {
             </Text>
           </View>
 
-          <Link href="/setting" className="border border-[#1B1717] rounded-lg p-1">
-            <Image source={icons.user} contentFit="contain" className={cn("w-6 h-6")} />
+          <Link
+            href="/setting"
+            className={cn(
+              "rounded-lg",
+              !data?.data.avatar && "border border-[#1B1717] p-1"
+            )}
+          >
+            <Image
+              source={
+                data?.data.avatar
+                  ? env.EXPO_PUBLIC_API_URL + data?.data.avatar
+                  : icons.user
+              }
+              contentFit="cover"
+              className={cn("w-8 h-8 rounded-lg")}
+            />
           </Link>
         </View>
 
@@ -49,26 +65,9 @@ export default function Home() {
           <TouchableOpacity
             activeOpacity={0.7}
             className="flex flex-row items-center justify-between w-[82%]"
+            onPress={() => router.navigate("/location")}
           >
-            <View className="flex flex-row items-center w-full gap-2">
-              <Image
-                source={icons.location}
-                contentFit="contain"
-                className={cn("w-6 h-6")}
-              />
-              <Text
-                ellipsizeMode="tail"
-                numberOfLines={1}
-                className="font-pjs-bold text-base text-[#1B1717] w-[70%]"
-              >
-                Jalan Rungkut Madya No. 1, Surabaya
-              </Text>
-            </View>
-            <Image
-              source={icons.chevronDown}
-              contentFit="contain"
-              className={cn("w-6 h-6")}
-            />
+            <UserLocation />
           </TouchableOpacity>
         </View>
 

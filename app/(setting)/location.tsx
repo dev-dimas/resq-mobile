@@ -1,26 +1,34 @@
-import MapView, { LatLng, Marker, Region } from "react-native-maps";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import * as ExpoLocation from "expo-location";
-import { LegacyRef, createRef, useEffect, useRef, useState } from "react";
-import { router } from "expo-router";
-import { Image } from "expo-image";
+import { updateLocation } from "@/api/account";
+import { useToken } from "@/store/useToken";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import icons from "constants/icons";
-import BackButton from "@/components/back-button";
+import { Image } from "expo-image";
+import * as ExpoLocation from "expo-location";
+import { router } from "expo-router";
+import useDashboard from "hooks/query/useDashboard";
+import { createRef, useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import MapView, { LatLng, Marker, Region } from "react-native-maps";
+import Toast from "react-native-toast-message";
 
-type Props = {
-  selectedCoordinate?: LatLng;
-};
-
-export default function Location({ selectedCoordinate }: Props) {
+export default function Location() {
+  const { token } = useToken();
+  const queryClient = useQueryClient();
+  const { data: dashboardData } = useDashboard();
   const [location, setLocation] = useState<LatLng | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<LatLng | null>(
-    selectedCoordinate || null
-  );
+  const updateAvatarRequest = useMutation({
+    mutationFn: (data: { latitude: number; longitude: number }) =>
+      updateLocation(data, token!),
+  });
+  const [selectedLocation, setSelectedLocation] = useState<LatLng | null>({
+    latitude: parseFloat(dashboardData?.data.latitude || "0"),
+    longitude: parseFloat(dashboardData?.data.longitude || "0"),
+  });
   const mapRef = createRef<MapView>();
 
   useEffect(() => {
     (async () => {
-      let { status } = await ExpoLocation.requestForegroundPermissionsAsync();
+      const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert.alert("Akses Lokasi", "Aktifkan akses lokasi terlebih dahulu!", [
           { text: "OKE", onPress: () => router.back() },
@@ -28,7 +36,7 @@ export default function Location({ selectedCoordinate }: Props) {
         return;
       }
 
-      let currentLocation = await ExpoLocation.getCurrentPositionAsync();
+      const currentLocation = await ExpoLocation.getCurrentPositionAsync();
       setLocation({
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
@@ -48,13 +56,54 @@ export default function Location({ selectedCoordinate }: Props) {
   if (location === null) return null;
 
   const INITIAL_REGION: Region = {
-    latitude: selectedLocation?.latitude || location.latitude,
-    longitude: selectedLocation?.longitude || location.longitude,
+    latitude: parseFloat(dashboardData?.data.latitude || "0") || location.latitude,
+    longitude: parseFloat(dashboardData?.data.longitude || "0") || location.longitude,
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
   };
 
-  console.log(location);
+  // const INITIAL_MARKER: LatLng = {
+  //   latitude: dashboardData?.data.latitude
+  //     ? parseFloat(dashboardData?.data.latitude!)
+  //     : location.latitude,
+  //   longitude: dashboardData?.data.longitude
+  //     ? parseFloat(dashboardData?.data.longitude!)
+  //     : location.longitude,
+  // };
+
+  const handleUpdateLocation = async () => {
+    try {
+      if (!selectedLocation) return;
+      const response = await updateAvatarRequest.mutateAsync({
+        latitude: selectedLocation?.latitude,
+        longitude: selectedLocation?.longitude,
+      });
+
+      if (!response.data) throw new Error();
+
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil memperbarui lokasi!",
+      });
+
+      router.back();
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui lokasi. Coba lagi!",
+      });
+    }
+  };
+
+  // useEffect(() => {
+  //   if (dashboardData?.data.latitude && dashboardData?.data.longitude) {
+  //     setSelectedLocation(INITIAL_MARKER);
+  //   }
+  // }, []);
 
   return (
     <View style={styles.container}>
@@ -70,12 +119,10 @@ export default function Location({ selectedCoordinate }: Props) {
       >
         <Marker
           draggable
-          coordinate={
-            selectedLocation || {
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }
-          }
+          coordinate={{
+            latitude: selectedLocation?.latitude || location.latitude,
+            longitude: selectedLocation?.longitude || location.longitude,
+          }}
         />
       </MapView>
 
@@ -101,6 +148,7 @@ export default function Location({ selectedCoordinate }: Props) {
       <TouchableOpacity
         activeOpacity={0.9}
         className="absolute px-2 py-4 w-[90%] mx-auto bg-[#FF3B30] rounded-lg bottom-10 left-[5%] items-center"
+        onPress={handleUpdateLocation}
       >
         <Text className="text-sm text-white font-pjs-bold">Simpan Lokasi</Text>
       </TouchableOpacity>
