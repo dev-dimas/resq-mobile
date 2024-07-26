@@ -13,7 +13,7 @@ export type DashboardResponse = {
   latitude: string;
   longitude: string;
   subscriber?: number;
-  products: Product[];
+  products: (Product & { distance: number; latitude: string; longitude: string })[];
 };
 
 export default function useDashboard() {

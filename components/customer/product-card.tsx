@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 import FavoriteButton from "./favorite-button";
+import env from "env";
 
 type Props = {
   product: ProductNearby;
@@ -25,7 +26,7 @@ export default function ProductCard({
     >
       <View className="flex flex-row gap-3 ">
         <Image
-          source={product.images[0]}
+          source={env.EXPO_PUBLIC_API_URL + product.images[0]}
           contentFit="cover"
           className="w-[70px] h-[70px] rounded-full"
         />

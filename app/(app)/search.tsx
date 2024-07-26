@@ -1,23 +1,28 @@
 import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
 import { icons } from "constants/";
-import { ProductNearby, products as dataProduct } from "data/product.data";
+import { products as dataProduct } from "data/product.data";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Product } from "types/product.type";
+
+type TProduct = Product & { distance: number; latitude: string; longitude: string };
 
 export default function Search() {
+  const { user } = useSession();
   const [keyword, setKeyword] = useState<string>("");
-  const [products, setProducts] = useState<ProductNearby[]>();
+  const [products, setProducts] = useState<TProduct[]>();
 
   useEffect(() => {
     if (keyword) {
       setProducts(
-        dataProduct.filter((product) =>
+        user?.data.products!.filter((product) =>
           product.name.toLowerCase().includes(keyword.toLowerCase())
         )
       );

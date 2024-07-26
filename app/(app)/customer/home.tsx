@@ -1,13 +1,18 @@
 import CategoryList from "@/components/customer/category-list";
 import NearbySales from "@/components/customer/nearby-sales";
 import UserLayout from "@/components/layout/user-layout";
+import UserLocation from "@/components/user-location";
 import { cn, getGreeting } from "@/lib/utils";
+import { useSession } from "@/store/useSession";
 import { icons, images } from "constants/";
+import env from "env";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
+  const { user } = useSession();
+
   return (
     <UserLayout containerClassname="pt-5">
       <View className="w-full">
@@ -18,10 +23,24 @@ export default function Home() {
             ellipsizeMode="tail"
             numberOfLines={1}
           >
-            Selamat {getGreeting()} $Name!
+            Selamat {getGreeting()} {user?.data.name.replace(/ .*/, "")}!
           </Text>
-          <Link href="/setting" className="border border-[#1B1717] rounded-lg p-1">
-            <Image source={icons.user} contentFit="contain" className={cn("w-6 h-6")} />
+          <Link
+            href="/setting"
+            className={cn(
+              "rounded-lg",
+              !user?.data.avatar && "border border-[#1B1717] p-1"
+            )}
+          >
+            <Image
+              source={
+                user?.data.avatar
+                  ? env.EXPO_PUBLIC_API_URL + user?.data.avatar
+                  : icons.user
+              }
+              contentFit="contain"
+              className={cn("w-8 h-8 rounded-lg")}
+            />
           </Link>
         </View>
 
@@ -35,25 +54,7 @@ export default function Home() {
             className="flex flex-row items-center justify-between w-[82%]"
             onPress={() => router.navigate("/location")}
           >
-            <View className="flex flex-row items-center w-full gap-2">
-              <Image
-                source={icons.location}
-                contentFit="contain"
-                className={cn("w-6 h-6")}
-              />
-              <Text
-                ellipsizeMode="tail"
-                numberOfLines={1}
-                className="font-pjs-bold text-base text-[#1B1717] w-[70%]"
-              >
-                Jalan Rungkut Madya No. 1, Surabaya
-              </Text>
-            </View>
-            <Image
-              source={icons.chevronDown}
-              contentFit="contain"
-              className={cn("w-6 h-6")}
-            />
+            <UserLocation />
           </TouchableOpacity>
         </View>
 

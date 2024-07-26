@@ -1,26 +1,38 @@
 import BackButton from "@/components/back-button";
 import FavoriteButton from "@/components/customer/favorite-button";
+import SellerAddress from "@/components/customer/seller-address";
 import SubscribeButton from "@/components/customer/subscribe-button";
 import ImageViewer from "@/components/image-viewer";
 import { priceToRupiah } from "@/lib/utils";
 import { icons } from "constants/";
-import { products } from "data/product.data";
-import { seller } from "data/seller.data";
+import env from "env";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams } from "expo-router";
+import useProductById from "hooks/query/useProductById";
 import { useState } from "react";
-import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  Linking,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProductDetail() {
   let { id } = useLocalSearchParams();
   id = id as string;
+  const { data, isPending } = useProductById(id);
 
   const [isImageViewerVisible, setIsImageViewerVisible] = useState<boolean>(false);
 
-  const product = products.find((product) => product.id === id);
+  if (isPending) {
+    return null;
+  }
 
-  if (!product)
+  if (!data?.data)
     return (
       <>
         <Stack.Screen
@@ -49,6 +61,18 @@ export default function ProductDetail() {
         </SafeAreaView>
       </>
     );
+
+  const handleOpenMaps = () => {
+    const scheme = Platform.select({ ios: "maps://0,0?q=", android: "geo:0,0?q=" });
+    const latLng = `${data.data.product.seller.latitude},${data.data.product.seller.longitude}`;
+    const label = data.data.product.seller.account.name;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+
+    Linking.openURL(url!);
+  };
 
   return (
     <>
@@ -81,7 +105,7 @@ export default function ProductDetail() {
         >
           <ImageViewer
             title="Foto Produk"
-            images={[{ uri: product.images[0] }]}
+            images={[{ uri: env.EXPO_PUBLIC_API_URL + data.data.product.images[0] }]}
             isVisible={isImageViewerVisible}
             setIsVisible={setIsImageViewerVisible}
           />
@@ -90,18 +114,21 @@ export default function ProductDetail() {
             onPress={() => setIsImageViewerVisible(true)}
           >
             <Image
-              source={product.images[0]}
+              source={env.EXPO_PUBLIC_API_URL + data.data.product.images[0]}
               className="w-[254px] h-[254px] rounded-full"
             />
           </TouchableOpacity>
           <View className="w-full mt-[14px] px-6 rounded-t-[20px] pt-5 bg-white flex-1 border border-slate-200 border-opacity-50">
             <View>
-              <Text className="text-2xl font-pjs-bold">{product.name}</Text>
+              <Text className="text-2xl font-pjs-bold">{data.data.product.name}</Text>
 
               {/* Seller information */}
               <View className="flex flex-row items-center py-3">
                 <Image
-                  source={seller.account.avatar}
+                  source={
+                    env.EXPO_PUBLIC_API_URL + data.data.product.seller.account.avatar ||
+                    icons.user
+                  }
                   className="w-12 h-12 rounded-full"
                 />
                 <View className="flex justify-center flex-1 ml-3 mr-5">
@@ -110,7 +137,7 @@ export default function ProductDetail() {
                     ellipsizeMode="tail"
                     numberOfLines={1}
                   >
-                    {seller.account.name}
+                    {data.data.product.seller.account.name}
                   </Text>
                   <View className="flex flex-row items-center">
                     <Image
@@ -118,16 +145,13 @@ export default function ProductDetail() {
                       tintColor="#757575"
                       className="w-3 h-3"
                     />
-                    <Text
-                      className="text-xs font-pjs-regular"
-                      ellipsizeMode="tail"
-                      numberOfLines={1}
-                    >
-                      {seller.address}
-                    </Text>
+                    <SellerAddress
+                      latitude={data.data.product.seller.latitude!}
+                      longitude={data.data.product.seller.longitude!}
+                    />
                   </View>
                   <Text className="font-pjs-regular text-[10px]">
-                    {seller.subscriber} Subscriber
+                    {data.data.product.seller.subscriber} Subscriber
                   </Text>
                 </View>
                 <SubscribeButton />
@@ -142,22 +166,7 @@ export default function ProductDetail() {
               contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 12 }}
             >
               <Text className="text-sm font-pjs-regular">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum minima
-                eaque dicta labore dolorum animi voluptates deserunt accusantium, beatae
-                aut, quidem delectus illo recusandae. Omnis aut et quod laborum dolorem
-                nesciunt beatae, accusamus quae quasi ipsam dicta molestias vero,
-                consequuntur distinctio rerum recusandae delectus eaque similique est unde
-                voluptatem! Eius consequatur voluptates minima autem recusandae inventore,
-                asperiores facilis, ab est soluta dicta sunt nemo. Magni, eius! Deserunt
-                iste impedit quisquam aspernatur quae? Eveniet minus, harum, eaque maiores
-                amet quo ullam sequi maxime saepe consequuntur, quisquam hic vel quia
-                voluptate facilis culpa nemo. Libero debitis commodi odit possimus
-                consequatur quaerat temporibus nobis aliquid in reprehenderit delectus
-                nulla nisi provident minus, a alias? Qui quibusdam eius placeat ducimus
-                beatae nam molestias, aliquam quas quaerat minus vitae, delectus debitis
-                explicabo? Reiciendis consequuntur perspiciatis doloribus nulla quis qui
-                assumenda non similique aut quaerat facilis eligendi, quibusdam deleniti
-                sequi excepturi. Facilis magnam numquam enim repellendus! End of line.
+                {data.data.product.description}
               </Text>
             </ScrollView>
           </View>
@@ -171,13 +180,13 @@ export default function ProductDetail() {
                 ellipsizeMode="tail"
                 numberOfLines={1}
               >
-                {priceToRupiah(product.price)}
+                {priceToRupiah(data.data.product.price)}
               </Text>
             </View>
             <TouchableOpacity
               activeOpacity={0.7}
               className="px-4 py-3 rounded-lg bg-[#FF3B30]"
-              onPress={() => console.log("Should get maps app")}
+              onPress={handleOpenMaps}
             >
               <Text className="text-sm text-white font-pjs-bold">Buka di Maps</Text>
             </TouchableOpacity>

@@ -1,5 +1,6 @@
 import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
+import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
 import { products as dataProduct } from "data/product.data";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -7,6 +8,7 @@ import { Dimensions, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoryName() {
+  const { user } = useSession();
   let { categoryName } = useLocalSearchParams();
   categoryName = (categoryName as string) || "";
 
@@ -43,7 +45,7 @@ export default function CategoryName() {
     );
   }
 
-  const products = dataProduct.filter(
+  const products = user?.data.products.filter(
     (product) =>
       product.categoryName === categoryName.replace(/^./, (match) => match.toUpperCase())
   );

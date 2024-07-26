@@ -1,4 +1,4 @@
-import { updateProduct } from "@/api/seller";
+import { reActivateProduct, updateProduct } from "@/api/seller";
 import BackButton from "@/components/back-button";
 import Button from "@/components/button";
 import Checkbox from "@/components/checkbox";
@@ -13,6 +13,7 @@ import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { ImagePickerSuccessResult } from "expo-image-picker";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
@@ -34,8 +35,12 @@ export default function EditProduct() {
     mutationFn: (data: Partial<TUpdateProductSchema>) =>
       updateProduct({ productId: id, data, productImage, token: token! }),
   });
+  const reactivateProductRequest = useMutation({
+    mutationFn: () => reActivateProduct(id, token!),
+  });
 
   const product = seller?.data.products.find((product) => product.id === id);
+  const isProductTimeExpired = dayjs().isAfter(dayjs(product?.endTime));
 
   const form = useForm({
     resolver: zodResolver(updateProductSchema),
@@ -74,6 +79,25 @@ export default function EditProduct() {
 
       if (!response.data) throw new Error();
 
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil memperbarui status produk!",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui status produk. Coba lagi!",
+      });
+    }
+  };
+
+  const handleReactivateProduct = async () => {
+    try {
+      const response = await reactivateProductRequest.mutateAsync();
+      if (!response.data) throw new Error();
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       Toast.show({
         type: "success",
@@ -225,16 +249,19 @@ export default function EditProduct() {
                       "items-center px-2 py-3 border-2 rounded-lg",
                       product.isActive ? "border-[#FF3B30]" : "border-[#49CB5C]"
                     )}
-                    disabled={updateProductRequest.isPending}
+                    disabled={
+                      updateProductRequest.isPending || reactivateProductRequest.isPending
+                    }
                   >
                     <Text
                       className={cn(
                         "text-sm font-pjs-bold",
                         product.isActive ? "text-[#FF3B30]" : "text-[#49CB5C]"
                       )}
-                      disabled={updateProductRequest.isPending}
                     >
-                      {product.isActive ? "Hentikan Penjualan" : "Aktifkan Penjualan"}
+                      {product.isActive && !isProductTimeExpired
+                        ? "Hentikan Penjualan"
+                        : "Aktifkan Penjualan"}
                     </Text>
                   </TouchableOpacity>
                   <Button
@@ -257,7 +284,11 @@ export default function EditProduct() {
         description={`Apakah kamu yakin ingin ${product.isActive ? "menghentikan" : "mengaktifkan"} penjualan produk ini?`}
         titleConfirm={product.isActive ? "Hentikan" : "Aktifkan"}
         onConfirm={async () => {
-          await handleChangeIsActive();
+          if (!product.isActive && isProductTimeExpired) {
+            await handleChangeIsActive();
+          } else {
+            await handleReactivateProduct();
+          }
           setIsModalOpen(false);
         }}
         buttonVariant={product.isActive ? "red" : "green"}

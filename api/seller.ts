@@ -85,3 +85,12 @@ export async function deleteProduct(productId: string, token: string) {
 
   return result;
 }
+
+export async function reActivateProduct(productId: string, token: string) {
+  return await coreApi.fetch({
+    url: `/product/${productId}/reactivate`,
+    method: "POST",
+    data: {},
+    token: token!,
+  });
+}
