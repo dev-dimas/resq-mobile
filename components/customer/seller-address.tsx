@@ -1,4 +1,4 @@
-import { getAddress } from "@/lib/utils";
+import { cn, getAddress } from "@/lib/utils";
 import * as Location from "expo-location";
 import React, { useState } from "react";
 import { Text } from "react-native";
@@ -6,9 +6,11 @@ import { Text } from "react-native";
 export default function SellerAddress({
   latitude,
   longitude,
+  className,
 }: {
   latitude: string;
   longitude: string;
+  className?: string;
 }) {
   const [location, setLocation] = useState<string>("-------");
 
@@ -21,7 +23,11 @@ export default function SellerAddress({
   });
 
   return (
-    <Text className="text-xs font-pjs-regular" ellipsizeMode="tail" numberOfLines={1}>
+    <Text
+      className={cn("text-xs font-pjs-regular w-[90%]", className)}
+      ellipsizeMode="tail"
+      numberOfLines={1}
+    >
       {location}
     </Text>
   );

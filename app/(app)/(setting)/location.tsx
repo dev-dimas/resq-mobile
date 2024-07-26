@@ -115,7 +115,7 @@ export default function Location() {
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={() => router.back()}
-        className="absolute top-8 left-[3%] bg-white p-2 rounded-lg border border-slate-700/30"
+        className="absolute top-12 left-[3%] bg-white p-2 rounded-lg border border-slate-700/30"
       >
         <Image source={icons.chevronLeft} className="w-6 h-6" contentFit="contain" />
       </TouchableOpacity>

@@ -26,6 +26,15 @@ export async function removeFromFavorite(productId: string, token: string) {
   });
 }
 
+export async function removeAllFromFavorite(token: string) {
+  return await coreApi.fetch({
+    method: "DELETE",
+    url: "/customer/favorite/all",
+    data: {},
+    token,
+  });
+}
+
 export async function getSubscriptionList(token: string) {
   return await coreApi.fetch({
     method: "GET",

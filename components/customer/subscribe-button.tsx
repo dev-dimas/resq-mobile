@@ -16,7 +16,6 @@ export default function SubscribeButton({ sellerId, productId }: Props) {
   const { subscription } = useSubscriptionStore();
   const { token } = useToken();
   const queryClient = useQueryClient();
-  console.log(productId);
   const subscribeRequest = useMutation({
     mutationFn: () => subscribeTo(sellerId, token!),
     onSuccess: async () => {
@@ -26,6 +25,7 @@ export default function SubscribeButton({ sellerId, productId }: Props) {
       await queryClient.invalidateQueries({
         queryKey: ["product", productId],
       });
+      await queryClient.invalidateQueries({ queryKey: ["seller", sellerId] });
     },
     onError: async (error) => {
       if (error.message === "Conflict") {

@@ -1,12 +1,16 @@
 import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
+import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
-import { products } from "data/product.data";
 import { Stack } from "expo-router";
 import { Dimensions, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Nearby() {
+  const { user } = useSession();
+
+  if (!user?.data.products) return null;
+
   return (
     <>
       <Stack.Screen
@@ -35,7 +39,7 @@ export default function Nearby() {
             }}
           >
             <FlashList
-              data={products.filter((product) => product.distance <= 1)}
+              data={user.data.products.filter((product) => product.distance <= 1)}
               estimatedItemSize={109}
               estimatedListSize={{ width: 355, height: 805 }}
               renderItem={({ item }) => {

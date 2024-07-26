@@ -1,20 +1,24 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
-import { Image } from "expo-image";
-import { SubscriptionWithProducts } from "data/subscription.data";
 import { icons } from "constants/";
-import SubscribeButton from "./subscribe-button";
+import env from "env";
+import { Image } from "expo-image";
 import { router } from "expo-router";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { Account } from "types/account.type";
+import { Seller } from "types/sellert.type";
+import SellerAddress from "./seller-address";
+import SubscribeButton from "./subscribe-button";
 
-export default function SubscriptionCard({
-  subscription,
-}: {
-  subscription: SubscriptionWithProducts;
-}) {
+type Props = {
+  subscription: Pick<Seller, "accountId" | "latitude" | "longitude"> &
+    Pick<Account, "name" | "avatar"> & { subscriber: number };
+};
+
+export default function SubscriptionCard({ subscription }: Props) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={() => router.navigate(`/seller/${subscription.id}`)}
+      onPress={() => router.navigate(`/seller/${subscription.accountId}`)}
     >
       <View
         className="flex-row items-center w-full"
@@ -24,7 +28,11 @@ export default function SubscriptionCard({
       >
         <View className="w-[93px] h-[93px] rounded-lg bg-[#F4F4F4] items-center justify-center">
           <Image
-            source={subscription.avatar}
+            source={
+              subscription.avatar
+                ? env.EXPO_PUBLIC_API_URL + subscription.avatar
+                : icons.user
+            }
             className=" w-[73px] aspect-square rounded-full"
             contentFit="cover"
           />
@@ -49,15 +57,17 @@ export default function SubscriptionCard({
                 className="h-3 aspect-square"
                 tintColor="#757575"
               />
-              <Text className="text-xs font-pjs-regular text-[#757575]">
-                {subscription.address}
-              </Text>
+              <SellerAddress
+                className="text-[#757575]"
+                latitude={subscription.latitude!}
+                longitude={subscription.longitude!}
+              />
             </View>
             <Text className="font-pjs-regular text-[10px] text-[#757575]">
               {subscription.subscriber} Subscriber
             </Text>
           </View>
-          <SubscribeButton />
+          <SubscribeButton sellerId={subscription.accountId} />
         </View>
       </View>
     </TouchableOpacity>

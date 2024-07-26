@@ -7,7 +7,7 @@ import { priceToRupiah } from "@/lib/utils";
 import { icons } from "constants/";
 import env from "env";
 import { Image } from "expo-image";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import useProductById from "hooks/query/useProductById";
 import { useEffect, useState } from "react";
 import {
@@ -27,9 +27,7 @@ export default function ProductDetail() {
   const { data, isPending } = useProductById(id);
 
   const [isImageViewerVisible, setIsImageViewerVisible] = useState<boolean>(false);
-  useEffect(() => {
-    console.log("Terpicu");
-  }, [data]);
+  useEffect(() => {}, [data]);
 
   if (isPending) {
     return null;
@@ -131,36 +129,44 @@ export default function ProductDetail() {
 
               {/* Seller information */}
               <View className="flex flex-row items-center py-3">
-                <Image
-                  source={
-                    env.EXPO_PUBLIC_API_URL + data.data.product.seller.account.avatar ||
-                    icons.user
-                  }
-                  className="w-12 h-12 rounded-full"
-                />
-                <View className="flex justify-center flex-1 ml-3 mr-5">
-                  <Text
-                    className="text-base font-pjs-bold"
-                    ellipsizeMode="tail"
-                    numberOfLines={1}
-                  >
-                    {data.data.product.seller.account.name}
-                  </Text>
-                  <View className="flex flex-row items-center">
-                    <Image
-                      source={icons.location}
-                      tintColor="#757575"
-                      className="w-3 h-3"
-                    />
-                    <SellerAddress
-                      latitude={data.data.product.seller.latitude!}
-                      longitude={data.data.product.seller.longitude!}
-                    />
+                <TouchableOpacity
+                  className="flex-row items-center flex-1"
+                  activeOpacity={0.7}
+                  onPress={() => router.navigate(`/seller/${data.data.product.sellerId}`)}
+                >
+                  <Image
+                    source={
+                      data.data.product.seller.account.avatar
+                        ? env.EXPO_PUBLIC_API_URL +
+                          data.data.product.seller.account.avatar
+                        : icons.user
+                    }
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <View className="flex justify-center flex-1 ml-3 mr-5">
+                    <Text
+                      className="text-base font-pjs-bold"
+                      ellipsizeMode="tail"
+                      numberOfLines={1}
+                    >
+                      {data.data.product.seller.account.name}
+                    </Text>
+                    <View className="flex flex-row items-center">
+                      <Image
+                        source={icons.location}
+                        tintColor="#757575"
+                        className="w-3 h-3"
+                      />
+                      <SellerAddress
+                        latitude={data.data.product.seller.latitude!}
+                        longitude={data.data.product.seller.longitude!}
+                      />
+                    </View>
+                    <Text className="font-pjs-regular text-[10px]">
+                      {data.data.product.seller.subscriber} Subscriber
+                    </Text>
                   </View>
-                  <Text className="font-pjs-regular text-[10px]">
-                    {data.data.product.seller.subscriber} Subscriber
-                  </Text>
-                </View>
+                </TouchableOpacity>
                 <SubscribeButton
                   sellerId={data.data.product.sellerId}
                   productId={data.data.product.id}

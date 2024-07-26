@@ -94,3 +94,11 @@ export async function reActivateProduct(productId: string, token: string) {
     token: token!,
   });
 }
+
+export async function getSellerById(sellerId: string, token: string) {
+  return await coreApi.fetch({
+    url: `/seller/${sellerId}`,
+    method: "GET",
+    token: token!,
+  });
+}

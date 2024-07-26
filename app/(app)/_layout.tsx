@@ -50,7 +50,7 @@ export default function AppLayout() {
 
   return (
     <>
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false, animation: "ios" }} />
       <Toast autoHide position="top" visibilityTime={3000} config={toastConfig} />
     </>
   );

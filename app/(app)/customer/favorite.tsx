@@ -3,18 +3,11 @@ import ProductCard from "@/components/customer/product-card";
 import UserLayout from "@/components/layout/user-layout";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
 import { FlashList } from "@shopify/flash-list";
-import { FavoriteProduct, favoritesProduct } from "data/favorite.data";
 import { Stack } from "expo-router";
 import { Text } from "react-native";
-import { WebResponse } from "types/web-response.type";
 
 export default function Favorite() {
   const { favorite } = useFavoriteStore();
-
-  const favoriteResponse: WebResponse<FavoriteProduct> = {
-    message: "success",
-    data: favoritesProduct,
-  };
 
   return (
     <>
@@ -33,7 +26,7 @@ export default function Favorite() {
           },
           headerShadowVisible: false,
           headerRight: () =>
-            favoriteResponse.data?.product.length ? <ButtonDeleteFavorites /> : undefined,
+            favorite?.data?.length ? <ButtonDeleteFavorites /> : undefined,
         }}
       />
       <UserLayout scrollViewClassname="mt-[-10px]">
