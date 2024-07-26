@@ -27,7 +27,6 @@ export default function Setting() {
       });
       await SecureStore.deleteItemAsync("token");
       queryClient.clear();
-      router.dismissAll();
 
       Toast.show({
         type: "success",

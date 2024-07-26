@@ -6,11 +6,11 @@ import {
   TChangePasswordSchema,
   changePasswordSchema,
 } from "@/schemas/form/change-password";
+import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Stack, router } from "expo-router";
-import useDashboard from "hooks/query/useDashboard";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Dimensions, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,7 +18,7 @@ import Toast from "react-native-toast-message";
 
 export default function ChangePassword() {
   const { token } = useToken();
-  const { data: dashboardData } = useDashboard();
+  const { user } = useSession();
   const changePasswordRequest = useMutation({
     mutationFn: (data: TChangePasswordSchema) => changePassword(data, token!),
   });
@@ -35,9 +35,7 @@ export default function ChangePassword() {
       if (response.error) throw new Error(response.message);
 
       router.navigate(
-        typeof dashboardData?.data.subscriber === "number"
-          ? "/seller/home"
-          : "/customer/home"
+        typeof user?.data.subscriber === "number" ? "/seller/home" : "/customer/home"
       );
 
       Toast.show({
@@ -95,7 +93,7 @@ export default function ChangePassword() {
                     label="Kata Sandi Saat Ini"
                     placeholder="Masukkan kata sandi saat ini"
                     type="password"
-                    // editable
+                    editable={!changePasswordRequest.isPending}
                   />
                   <InputField
                     name="newPassword"
@@ -103,7 +101,7 @@ export default function ChangePassword() {
                     label="Kata Sandi Baru"
                     placeholder="Masukkan kata sandi baru"
                     type="password"
-                    // editable
+                    editable={!changePasswordRequest.isPending}
                   />
                   <InputField
                     name="confirmPassword"
@@ -111,13 +109,13 @@ export default function ChangePassword() {
                     label="Konfirmasi Kata Sandi Baru"
                     placeholder="Masukkan konfirmasi kata sandi baru"
                     type="password"
-                    // editable
+                    editable={!changePasswordRequest.isPending}
                   />
                 </View>
                 <Button
                   onSubmit={onSubmit}
                   containerStyles="bg-[#FF3B30] w-full mt-7"
-                  // isLoading={signInRequest.isPending}
+                  isLoading={changePasswordRequest.isPending}
                 >
                   Ubah Kata Sandi
                 </Button>

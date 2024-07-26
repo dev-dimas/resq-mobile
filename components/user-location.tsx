@@ -1,19 +1,19 @@
 import { cn, getAddress } from "@/lib/utils";
+import { useSession } from "@/store/useSession";
 import { icons } from "constants/";
 import { Image } from "expo-image";
 import * as Location from "expo-location";
-import useDashboard from "hooks/query/useDashboard";
 import { useState } from "react";
 import { Text, View } from "react-native";
 
 export default function UserLocation() {
   const [location, setLocation] = useState("-------");
-  const { data } = useDashboard();
+  const { user } = useSession();
 
-  if (data?.data.latitude && data?.data.longitude) {
+  if (user?.data.latitude && user?.data.longitude) {
     Location.reverseGeocodeAsync({
-      latitude: parseFloat(data.data.latitude),
-      longitude: parseFloat(data.data.longitude),
+      latitude: parseFloat(user.data.latitude),
+      longitude: parseFloat(user.data.longitude),
     }).then((res) => {
       const geoLocation = res[0];
       setLocation(getAddress(geoLocation.formattedAddress!));

@@ -3,18 +3,16 @@ import FavoriteButton from "@/components/customer/favorite-button";
 import SubscribeButton from "@/components/customer/subscribe-button";
 import ImageViewer from "@/components/image-viewer";
 import { priceToRupiah } from "@/lib/utils";
-import { useToken } from "@/store/useToken";
 import { icons } from "constants/";
 import { products } from "data/product.data";
 import { seller } from "data/seller.data";
 import { Image } from "expo-image";
-import { Redirect, Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProductDetail() {
-  const { token } = useToken();
   let { id } = useLocalSearchParams();
   id = id as string;
 
@@ -22,7 +20,6 @@ export default function ProductDetail() {
 
   const product = products.find((product) => product.id === id);
 
-  if (!token) return <Redirect href={"/"} />;
   if (!product)
     return (
       <>

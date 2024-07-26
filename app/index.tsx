@@ -1,26 +1,24 @@
+import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
-import { Link, Redirect, useRootNavigationState } from "expo-router";
-import useDashboard from "hooks/query/useDashboard";
+import { Link, Redirect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const { token } = useToken();
-  const { data } = useDashboard();
-  const rootNavigationState = useRootNavigationState();
+  const { user } = useSession();
 
-  if (token && data?.data) {
+  if (token && user?.data) {
     const href =
-      typeof data.data.subscriber === "number" ? "/seller/home" : "/customer/home";
-    if (!rootNavigationState?.key) return null;
+      typeof user.data.subscriber === "number" ? "/seller/home" : "/customer/home";
     return <Redirect href={href} />;
   }
 
   return (
     <SafeAreaView className="flex gap-y-2">
-      <Link href={"/(auth)/sign-in"} className="text-lg font-semibold">
+      <Link href={"/sign-in"} className="text-lg font-semibold">
         Sign-In
       </Link>
-      <Link href={"/(auth)/sign-up"} className="text-lg font-semibold">
+      <Link href={"/sign-up"} className="text-lg font-semibold">
         Sign-Up
       </Link>
       <Link href={"/customer/home"} className="text-lg font-semibold">

@@ -4,6 +4,7 @@ import Modal from "@/components/modal";
 import SellerProductCard from "@/components/seller/seller-product-card";
 import UserLocation from "@/components/user-location";
 import { cn, getGreeting } from "@/lib/utils";
+import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,14 +12,13 @@ import { icons } from "constants/";
 import env from "env";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
-import useDashboard from "hooks/query/useDashboard";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { Product } from "types/product.type";
 
 export default function Home() {
-  const { data } = useDashboard();
+  const { user } = useSession();
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
   const [productToBeDelete, setProductToBeDelete] = useState<Product | null>(null);
   const { token } = useToken();
@@ -64,10 +64,10 @@ export default function Home() {
               numberOfLines={1}
               style={{ includeFontPadding: false }}
             >
-              {data?.data.name}
+              {user?.data.name}
             </Text>
             <Text className="font-pjs-bold text-xs text-[#757575] mt-1">
-              Jumlah Subscriber : {data?.data.subscriber}
+              Jumlah Subscriber : {user?.data.subscriber}
             </Text>
           </View>
 
@@ -75,13 +75,13 @@ export default function Home() {
             href="/setting"
             className={cn(
               "rounded-lg",
-              !data?.data.avatar && "border border-[#1B1717] p-1"
+              !user?.data.avatar && "border border-[#1B1717] p-1"
             )}
           >
             <Image
               source={
-                data?.data.avatar
-                  ? env.EXPO_PUBLIC_API_URL + data?.data.avatar
+                user?.data.avatar
+                  ? env.EXPO_PUBLIC_API_URL + user?.data.avatar
                   : icons.user
               }
               contentFit="cover"
@@ -126,7 +126,7 @@ export default function Home() {
         <View className="flex-1 mt-4">
           <Text className="font-pjs-bold text-base text-[#1B1717]">Produk Kamu</Text>
           <FlashList
-            data={data?.data.products}
+            data={user?.data.products}
             estimatedItemSize={109}
             estimatedListSize={{ width: 364, height: 805 }}
             renderItem={({ item }) => {

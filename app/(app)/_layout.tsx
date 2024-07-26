@@ -1,32 +1,29 @@
 import { updateLocation } from "@/api/account";
+import { toastConfig } from "@/components/toast-config";
+import { useFontState } from "@/store/useFontState";
+import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Location from "expo-location";
-import { SplashScreen } from "expo-router";
-import useDashboard from "hooks/query/useDashboard";
-import React, { useEffect } from "react";
+import { Redirect, Stack } from "expo-router";
+import { useEffect } from "react";
 import { Alert, BackHandler } from "react-native";
+import Toast from "react-native-toast-message";
 
-type Props = {
-  children: React.ReactNode;
-  fontsLoaded: boolean;
-  fontsError: Error | null;
-};
-
-export default function AccountProvider({ children, fontsLoaded, fontsError }: Props) {
+export default function AppLayout() {
   const { token } = useToken();
-  const { data } = useDashboard();
+  const { user } = useSession();
+  const queryClient = useQueryClient();
   const updateLocationRequest = useMutation({
     mutationFn: (data: { latitude: number; longitude: number }) =>
       updateLocation(data, token!),
   });
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     (async () => {
-      if (!token || !data) return;
+      if (!token || !user) return;
 
-      if (data?.data.latitude && data?.data.longitude) return;
+      if (user?.data.latitude && user?.data.longitude) return;
 
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -46,19 +43,16 @@ export default function AccountProvider({ children, fontsLoaded, fontsError }: P
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, data]);
+  }, [token, user]);
 
-  useEffect(() => {
-    if (fontsError) throw fontsError;
-
-    if (fontsLoaded && ((token && data?.data) || (!token && !data))) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontsError, token, data]);
-
-  if ((!fontsLoaded && !fontsError) || (token && !data)) {
-    return null;
+  if (!token && !user?.data) {
+    return <Redirect href="/sign-in" />;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <Stack screenOptions={{ headerShown: false }} />
+      <Toast autoHide position="top" visibilityTime={3000} config={toastConfig} />
+    </>
+  );
 }

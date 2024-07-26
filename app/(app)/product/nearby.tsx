@@ -1,15 +1,12 @@
 import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
-import { useToken } from "@/store/useToken";
 import { FlashList } from "@shopify/flash-list";
 import { products } from "data/product.data";
-import { Redirect, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { Dimensions, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Nearby() {
-  const { token } = useToken();
-  if (!token) return <Redirect href={"/"} />;
   return (
     <>
       <Stack.Screen

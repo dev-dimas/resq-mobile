@@ -4,19 +4,19 @@ import Button from "@/components/button";
 import ImagePicker from "@/components/image-picker";
 import InputField from "@/components/input-field";
 import { TEditAccountSchema, editAccountSchema } from "@/schemas/form/edit-account";
+import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ImagePickerSuccessResult } from "expo-image-picker";
 import { Stack, router } from "expo-router";
-import useDashboard from "hooks/query/useDashboard";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 export default function EditAccount() {
-  const { data: dashboardData } = useDashboard();
+  const { user } = useSession();
   const queryClient = useQueryClient();
   const { token } = useToken();
 
@@ -45,9 +45,7 @@ export default function EditAccount() {
     try {
       if (!isDirty) {
         router.navigate(
-          typeof dashboardData?.data.subscriber === "number"
-            ? "/seller/home"
-            : "/customer/home"
+          typeof user?.data.subscriber === "number" ? "/seller/home" : "/customer/home"
         );
         return;
       }
@@ -63,9 +61,7 @@ export default function EditAccount() {
       });
 
       router.navigate(
-        typeof dashboardData?.data.subscriber === "number"
-          ? "/seller/home"
-          : "/customer/home"
+        typeof user?.data.subscriber === "number" ? "/seller/home" : "/customer/home"
       );
     } catch (error) {
       Toast.show({
@@ -141,7 +137,7 @@ export default function EditAccount() {
                 imageStyles="w-48 h-48"
                 isUserAvatar
                 viewerTitle="Foto Profile"
-                defaultValue={dashboardData?.data.avatar}
+                defaultValue={user?.data.avatar}
                 handleSave={(image: ImagePickerSuccessResult) =>
                   handleUpdateAvatar(image)
                 }
@@ -157,15 +153,15 @@ export default function EditAccount() {
                     name="name"
                     control={control}
                     label="Nama"
-                    defaultValue={dashboardData?.data.name}
-                    // editable
+                    defaultValue={user?.data.name}
+                    editable={!editAccountRequest.isPending}
                   />
                   <InputField
                     name="email"
                     control={control}
                     label="Email"
-                    defaultValue={dashboardData?.data.email}
-                    // editable
+                    defaultValue={user?.data.email}
+                    editable={!editAccountRequest.isPending}
                   />
                 </View>
                 <View className="mt-7">
@@ -181,7 +177,7 @@ export default function EditAccount() {
                   <Button
                     onSubmit={onSubmit}
                     containerStyles="bg-[#FF3B30] w-full mt-5"
-                    // isLoading={signInRequest.isPending}
+                    isLoading={editAccountRequest.isPending}
                   >
                     Simpan
                   </Button>

@@ -1,11 +1,11 @@
 import { updateLocation } from "@/api/account";
+import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import icons from "constants/icons";
 import { Image } from "expo-image";
 import * as ExpoLocation from "expo-location";
 import { router } from "expo-router";
-import useDashboard from "hooks/query/useDashboard";
 import { createRef, useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { LatLng, Marker, Region } from "react-native-maps";
@@ -14,15 +14,15 @@ import Toast from "react-native-toast-message";
 export default function Location() {
   const { token } = useToken();
   const queryClient = useQueryClient();
-  const { data: dashboardData } = useDashboard();
+  const { user } = useSession();
   const [location, setLocation] = useState<LatLng | null>(null);
   const updateAvatarRequest = useMutation({
     mutationFn: (data: { latitude: number; longitude: number }) =>
       updateLocation(data, token!),
   });
   const [selectedLocation, setSelectedLocation] = useState<LatLng | null>({
-    latitude: parseFloat(dashboardData?.data.latitude || "0"),
-    longitude: parseFloat(dashboardData?.data.longitude || "0"),
+    latitude: parseFloat(user?.data.latitude || "0"),
+    longitude: parseFloat(user?.data.longitude || "0"),
   });
   const mapRef = createRef<MapView>();
 
@@ -56,20 +56,11 @@ export default function Location() {
   if (location === null) return null;
 
   const INITIAL_REGION: Region = {
-    latitude: parseFloat(dashboardData?.data.latitude || "0") || location.latitude,
-    longitude: parseFloat(dashboardData?.data.longitude || "0") || location.longitude,
+    latitude: parseFloat(user?.data.latitude || "0") || location.latitude,
+    longitude: parseFloat(user?.data.longitude || "0") || location.longitude,
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
   };
-
-  // const INITIAL_MARKER: LatLng = {
-  //   latitude: dashboardData?.data.latitude
-  //     ? parseFloat(dashboardData?.data.latitude!)
-  //     : location.latitude,
-  //   longitude: dashboardData?.data.longitude
-  //     ? parseFloat(dashboardData?.data.longitude!)
-  //     : location.longitude,
-  // };
 
   const handleUpdateLocation = async () => {
     try {
@@ -98,12 +89,6 @@ export default function Location() {
       });
     }
   };
-
-  // useEffect(() => {
-  //   if (dashboardData?.data.latitude && dashboardData?.data.longitude) {
-  //     setSelectedLocation(INITIAL_MARKER);
-  //   }
-  // }, []);
 
   return (
     <View style={styles.container}>

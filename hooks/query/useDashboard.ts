@@ -1,9 +1,12 @@
 import { fetchDashboard } from "@/api/auth";
+import SecureStore from "@/lib/secure-store";
+import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Product } from "types/product.type";
 
-type DashboardResponse = {
+export type DashboardResponse = {
   name: string;
   email: string;
   avatar: string;
@@ -14,7 +17,8 @@ type DashboardResponse = {
 };
 
 export default function useDashboard() {
-  const { token } = useToken();
+  const { token, setToken } = useToken();
+  const { setUser } = useSession();
 
   const dashboard: UseQueryResult<{
     message: string;
@@ -25,6 +29,15 @@ export default function useDashboard() {
     staleTime: 2000,
     enabled: !!token,
   });
+
+  useEffect(() => {
+    if (dashboard.failureReason?.message === "Unauthorized") {
+      SecureStore.deleteItemAsync("token");
+      setToken(null);
+      setUser(undefined);
+      return;
+    }
+  }, [dashboard.failureReason]);
 
   return { ...dashboard };
 }

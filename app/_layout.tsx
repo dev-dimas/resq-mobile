@@ -1,17 +1,16 @@
-import { toastConfig } from "@/components/toast-config";
+import { useFontState } from "@/store/useFontState";
 import { useReactQueryDevTools } from "@dev-plugins/react-query/build/useReactQueryDevTools";
 import NetInfo from "@react-native-community/netinfo";
 import { QueryClient, QueryClientProvider, onlineManager } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
-import AccountProvider from "providers/account-provider";
-import React from "react";
-import Toast from "react-native-toast-message";
+import { Slot, SplashScreen } from "expo-router";
+import SessionProvider from "providers/session-provider";
+import React, { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
-export default function RootLayout() {
+export default function Root() {
   useReactQueryDevTools(queryClient);
   const [fontsLoaded, fontsError] = useFonts({
     "PlusJakartaSans-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
@@ -22,6 +21,7 @@ export default function RootLayout() {
     "PlusJakartaSans-Regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
     "PlusJakartaSans-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   });
+  const { setIsFontsLoaded } = useFontState();
 
   onlineManager.setEventListener((setOnline) => {
     return NetInfo.addEventListener((state) => {
@@ -29,23 +29,16 @@ export default function RootLayout() {
     });
   });
 
+  useEffect(() => {
+    if (fontsError) throw fontsError;
+    setIsFontsLoaded(fontsLoaded);
+  }, [fontsLoaded, fontsError]);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <AccountProvider fontsLoaded={fontsLoaded} fontsError={fontsError}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="customer" />
-          <Stack.Screen name="(setting)" />
-          <Stack.Screen name="search" />
-          <Stack.Screen name="category/[categoryName]" />
-          <Stack.Screen name="product/[id]" />
-          <Stack.Screen name="seller/[id]" />
-          <Stack.Screen name="product/nearby" />
-          <Stack.Screen name="seller/(auth-seller)" />
-        </Stack>
-        <Toast autoHide position="top" visibilityTime={3000} config={toastConfig} />
-      </AccountProvider>
+      <SessionProvider>
+        <Slot />
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

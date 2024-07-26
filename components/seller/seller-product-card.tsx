@@ -18,7 +18,6 @@ export default function SellerProductCard({
   setIsModalDeleteOpen,
   setProductToBeDelete,
 }: Props) {
-  console.log(product);
   return (
     <>
       <TouchableOpacity

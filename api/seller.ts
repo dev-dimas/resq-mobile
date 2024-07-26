@@ -64,7 +64,6 @@ export async function updateProduct({
       name: productImage.assets[0].fileName,
     });
 
-  console.log(JSON.stringify(formData));
   const result = await coreApi.fetch({
     url: `/product/${productId}`,
     method: "PATCH",

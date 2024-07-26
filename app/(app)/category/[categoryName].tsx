@@ -1,19 +1,14 @@
 import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
-import { useToken } from "@/store/useToken";
 import { FlashList } from "@shopify/flash-list";
 import { products as dataProduct } from "data/product.data";
-import { Redirect, Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Dimensions, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoryName() {
-  const { token } = useToken();
   let { categoryName } = useLocalSearchParams();
-
-  if (!token) return <Redirect href={"/"} />;
-
-  categoryName = categoryName as string;
+  categoryName = (categoryName as string) || "";
 
   const categoryNameAvailable = ["makanan", "minuman", "salad", "dessert"];
 

@@ -56,8 +56,8 @@ const TimeInput = React.memo(
                     }
                     setShowTimePicker(false);
                   }}
-                  onTouchCancel={() => console.log("Cancel")}
                   is24Hour
+                  themeVariant="light"
                 />
               )}
             </View>
