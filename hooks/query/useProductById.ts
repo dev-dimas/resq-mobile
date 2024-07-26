@@ -8,7 +8,7 @@ import { Seller } from "types/sellert.type";
 type TProductById = {
   product: Product & {
     seller: Pick<Seller, "latitude" | "longitude"> & {
-      account: Pick<Account, "id" | "name" | "avatar">;
+      account: Pick<Account, "name" | "avatar">;
       subscriber: number;
     };
   } & { distance: number };
@@ -21,7 +21,7 @@ export default function useProductById(productId: string) {
     message: string;
     data: TProductById;
   }> = useQuery({
-    queryKey: [productId],
+    queryKey: ["product", productId, token],
     queryFn: () => getProductById(productId, token!),
     staleTime: 2000,
     enabled: !!token,

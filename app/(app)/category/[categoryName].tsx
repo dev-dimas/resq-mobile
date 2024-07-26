@@ -2,7 +2,6 @@ import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
 import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
-import { products as dataProduct } from "data/product.data";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Dimensions, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

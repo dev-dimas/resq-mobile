@@ -1,6 +1,5 @@
 import { updateLocation } from "@/api/account";
 import { toastConfig } from "@/components/toast-config";
-import { useFontState } from "@/store/useFontState";
 import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

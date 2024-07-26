@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
 import { icons } from "constants/";
-import { products as dataProduct } from "data/product.data";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";

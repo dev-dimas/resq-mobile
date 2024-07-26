@@ -56,14 +56,14 @@ class CoreAPI {
 
       const json = await res.json();
 
-      console.log("LOG FROM CORE.TS", json);
+      console.log("LOG FROM CORE.TS", JSON.stringify(json));
       if (res.status !== 200 && res.status !== 201) {
         throw new Error(json.message);
       }
 
       return json;
     } catch (error) {
-      console.log("Error Fetch : ", error);
+      console.log(`Error Fetch ${url} : `, error);
       throw error;
     }
   }

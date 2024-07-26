@@ -62,7 +62,11 @@ export default function ProductCard({
             </Text>
           </View>
           {withFavoriteButton && (
-            <FavoriteButton buttonClassname="w-5 ml-5" imageClassname="w-5 h-5" />
+            <FavoriteButton
+              productId={product.id}
+              buttonClassname="w-5 ml-5"
+              imageClassname="w-5 h-5"
+            />
           )}
         </View>
       </View>

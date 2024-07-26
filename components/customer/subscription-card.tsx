@@ -57,7 +57,7 @@ export default function SubscriptionCard({
               {subscription.subscriber} Subscriber
             </Text>
           </View>
-          <SubscribeButton type="unsubscribe" />
+          <SubscribeButton />
         </View>
       </View>
     </TouchableOpacity>

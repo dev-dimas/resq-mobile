@@ -1,25 +1,96 @@
+import { addToFavorite, removeFromFavorite } from "@/api/customer";
 import { cn } from "@/lib/utils";
+import { useFavoriteStore } from "@/store/useFavoriteStore";
+import { useToken } from "@/store/useToken";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { icons } from "constants/";
 import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native";
+import Toast from "react-native-toast-message";
 
 type Props = {
+  productId: string;
   buttonClassname?: string;
   imageClassname?: string;
 };
 
-export default function FavoriteButton({ buttonClassname, imageClassname }: Props) {
+export default function FavoriteButton({
+  productId,
+  buttonClassname,
+  imageClassname,
+}: Props) {
+  const { favorite } = useFavoriteStore();
+  const { token } = useToken();
+  const queryClient = useQueryClient();
+  const addFavoriteRequest = useMutation({
+    mutationFn: () => addToFavorite(productId, token!),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["favorite"] });
+    },
+    onError: async (error) => {
+      if (error.message === "Conflict") {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Produk sudah ada di daftar favorit!",
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Terjadi kesalahan. Coba lagi!",
+        });
+      }
+    },
+  });
+  const removeFavoriteRequest = useMutation({
+    mutationFn: () => removeFromFavorite(productId, token!),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["favorite"] });
+    },
+    onError: async (error) => {
+      if (error.message === "Conflict") {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Produk tidak ada di daftar favorit!",
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Terjadi kesalahan. Coba lagi!",
+        });
+      }
+    },
+  });
+
+  const isFavorite = favorite?.data.find((product) => product.id === productId);
+
+  const handleAddToFavorite = async () => {
+    if (isFavorite) return;
+    if (addFavoriteRequest.isPending) return;
+    await addFavoriteRequest.mutateAsync();
+  };
+
+  const handleRemoveFromFavorite = async () => {
+    if (!isFavorite) return;
+    if (removeFavoriteRequest.isPending) return;
+    await removeFavoriteRequest.mutateAsync();
+  };
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       className={cn(buttonClassname)}
-      onPress={() => console.log("Fav")}
+      onPress={isFavorite ? handleRemoveFromFavorite : handleAddToFavorite}
+      disabled={addFavoriteRequest.isPending || removeFavoriteRequest.isPending}
     >
       <Image
-        source={icons.heartFill}
+        source={isFavorite ? icons.heartFill : icons.heartOutline}
         contentFit="contain"
         className={cn(imageClassname)}
-        tintColor="#FF3B30"
+        tintColor={isFavorite ? "#FF3B30" : "black"}
       />
     </TouchableOpacity>
   );

@@ -9,7 +9,7 @@ import env from "env";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams } from "expo-router";
 import useProductById from "hooks/query/useProductById";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   Linking,
@@ -27,6 +27,9 @@ export default function ProductDetail() {
   const { data, isPending } = useProductById(id);
 
   const [isImageViewerVisible, setIsImageViewerVisible] = useState<boolean>(false);
+  useEffect(() => {
+    console.log("Terpicu");
+  }, [data]);
 
   if (isPending) {
     return null;
@@ -92,7 +95,11 @@ export default function ProductDetail() {
           headerShadowVisible: false,
           headerLeft: () => <BackButton />,
           headerRight: () => (
-            <FavoriteButton buttonClassname="w-5 h-5 mr-2" imageClassname="w-5 h-5" />
+            <FavoriteButton
+              productId={data.data.product.id}
+              buttonClassname="w-5 h-5 mr-2"
+              imageClassname="w-5 h-5"
+            />
           ),
         }}
       />
@@ -154,7 +161,10 @@ export default function ProductDetail() {
                     {data.data.product.seller.subscriber} Subscriber
                   </Text>
                 </View>
-                <SubscribeButton />
+                <SubscribeButton
+                  sellerId={data.data.product.sellerId}
+                  productId={data.data.product.id}
+                />
               </View>
 
               {/* Product description */}
