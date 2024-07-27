@@ -19,6 +19,22 @@ export default function Location() {
   const updateAvatarRequest = useMutation({
     mutationFn: (data: { latitude: number; longitude: number }) =>
       updateLocation(data, token!),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil memperbarui lokasi!",
+      });
+    },
+    onError: () => {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal memperbarui lokasi. Coba lagi!",
+      });
+    },
   });
   const [selectedLocation, setSelectedLocation] = useState<LatLng | null>({
     latitude: parseFloat(user?.data.latitude || "0"),
@@ -63,31 +79,13 @@ export default function Location() {
   };
 
   const handleUpdateLocation = async () => {
-    try {
-      if (!selectedLocation) return;
-      const response = await updateAvatarRequest.mutateAsync({
-        latitude: selectedLocation?.latitude,
-        longitude: selectedLocation?.longitude,
-      });
+    if (!selectedLocation) return;
+    await updateAvatarRequest.mutateAsync({
+      latitude: selectedLocation?.latitude,
+      longitude: selectedLocation?.longitude,
+    });
 
-      if (!response.data) throw new Error();
-
-      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-
-      Toast.show({
-        type: "success",
-        text1: "Berhasil",
-        text2: "Berhasil memperbarui lokasi!",
-      });
-
-      router.back();
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Gagal",
-        text2: "Gagal memperbarui lokasi. Coba lagi!",
-      });
-    }
+    router.back();
   };
 
   return (

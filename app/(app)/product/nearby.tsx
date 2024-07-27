@@ -1,59 +1,40 @@
-import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
+import Header from "@/components/header";
+import UserLayout from "@/components/layout/user-layout";
+import NotFound from "@/components/not-found";
 import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
-import { Stack } from "expo-router";
-import { Dimensions, ScrollView, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "react-native";
 
 export default function Nearby() {
   const { user } = useSession();
 
-  if (!user?.data.products) return null;
+  if (!user?.data.products) {
+    return (
+      <NotFound withHeader headerProps={{ title: "Penjualan Terdekat" }}>
+        Tidak ada penjualan didekatmu
+      </NotFound>
+    );
+  }
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: "Penjualan Terdekat",
-          headerTitleStyle: {
-            fontFamily: "PlusJakartaSans-Bold",
-            fontSize: 20,
-            color: "#1B1717",
-          },
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: "#F8F8F9",
-          },
-          headerShadowVisible: false,
-          headerLeft: () => <BackButton />,
-        }}
-      />
-      <SafeAreaView className="h-full bg-[#F8F8F9]">
-        <ScrollView className="mt-[-15px]">
-          <View
-            className="flex items-center flex-1 w-full px-6 pb-8"
-            style={{
-              minWidth: Dimensions.get("window").width,
-            }}
-          >
-            <FlashList
-              data={user.data.products.filter((product) => product.distance <= 1)}
-              estimatedItemSize={109}
-              estimatedListSize={{ width: 355, height: 805 }}
-              renderItem={({ item }) => {
-                return <ProductCard product={item} />;
-              }}
-              ListEmptyComponent={
-                <Text className="text-center font-pjs-regular">
-                  Belum ada penjualan di dekatmu.
-                </Text>
-              }
-            />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+      <Header title="Penjualan Terdekat" withBackButton />
+      <UserLayout scrollViewClassname="mt-[-15px]">
+        <FlashList
+          data={user.data.products.filter((product) => product.distance <= 1)}
+          estimatedItemSize={109}
+          estimatedListSize={{ width: 355, height: 805 }}
+          renderItem={({ item }) => {
+            return <ProductCard product={item} />;
+          }}
+          ListEmptyComponent={
+            <Text className="text-center font-pjs-regular">
+              Belum ada penjualan di dekatmu.
+            </Text>
+          }
+        />
+      </UserLayout>
     </>
   );
 }

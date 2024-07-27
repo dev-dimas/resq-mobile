@@ -25,30 +25,29 @@ export default function Home() {
   const queryClient = useQueryClient();
   const deleteProductRequest = useMutation({
     mutationFn: () => deleteProduct(productToBeDelete!.id, token!),
-  });
-
-  const handleDeleteProduct = async () => {
-    try {
-      if (!productToBeDelete) return;
-
-      await deleteProductRequest.mutateAsync();
-
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-
-      setIsModalDeleteOpen(false);
-      setProductToBeDelete(null);
       Toast.show({
         type: "success",
         text1: "Berhasil",
         text2: "Produk berhasil dihapus",
       });
-    } catch (error) {
+    },
+    onError: () => {
       Toast.show({
         type: "error",
         text1: "Gagal",
         text2: "Produk gagal dihapus",
       });
-    }
+    },
+  });
+
+  const handleDeleteProduct = async () => {
+    if (!productToBeDelete) return;
+
+    await deleteProductRequest.mutateAsync();
+    setIsModalDeleteOpen(false);
+    setProductToBeDelete(null);
   };
 
   return (

@@ -32,7 +32,7 @@ export default function Root() {
   useEffect(() => {
     if (fontsError) throw fontsError;
     setIsFontsLoaded(fontsLoaded);
-  }, [fontsLoaded, fontsError]);
+  }, [fontsLoaded, fontsError, setIsFontsLoaded]);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -37,7 +37,7 @@ export default function useDashboard() {
       setUser(undefined);
       return;
     }
-  }, [dashboard.failureReason]);
+  }, [dashboard.failureReason, setToken, setUser]);
 
   return { ...dashboard };
 }

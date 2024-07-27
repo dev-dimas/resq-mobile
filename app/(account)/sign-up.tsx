@@ -90,6 +90,7 @@ export default function SignUp() {
             label="Email"
             editable={!signUpRequest.isPending || !signInRequest.isPending}
             keyboardType="email-address"
+            autoCapitalize="none"
           />
           <InputField
             name="password"
@@ -97,6 +98,7 @@ export default function SignUp() {
             label="Kata Sandi"
             type="password"
             editable={!signUpRequest.isPending || !signInRequest.isPending}
+            autoCapitalize="none"
           />
           <InputField
             name="confirmPassword"
@@ -104,6 +106,7 @@ export default function SignUp() {
             label="Konfirmasi Kata Sandi"
             type="password"
             editable={!signUpRequest.isPending || !signInRequest.isPending}
+            autoCapitalize="none"
           />
         </View>
 

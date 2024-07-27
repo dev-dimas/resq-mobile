@@ -1,13 +1,14 @@
-import BackButton from "@/components/back-button";
 import ProductCard from "@/components/customer/product-card";
 import SellerAddress from "@/components/customer/seller-address";
 import SubscribeButton from "@/components/customer/subscribe-button";
+import Header from "@/components/header";
 import ImageViewer from "@/components/image-viewer";
+import NotFound from "@/components/not-found";
 import { FlashList } from "@shopify/flash-list";
 import icons from "constants/icons";
 import env from "env";
 import { Image } from "expo-image";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import useGetSellerById from "hooks/query/useGetSellerById";
 import React, { useState } from "react";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -23,55 +24,11 @@ export default function SellerId() {
     return null;
   }
 
-  if (!seller?.data)
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            headerShown: true,
-            headerTitle: "Seller Not Found!",
-            headerTitleStyle: {
-              fontFamily: "PlusJakartaSans-Bold",
-              fontSize: 20,
-              color: "#1B1717",
-            },
-            headerTitleAlign: "center",
-            headerStyle: {
-              backgroundColor: "#F8F8F9",
-            },
-            headerShadowVisible: false,
-            headerLeft: () => <BackButton />,
-          }}
-        />
-        <SafeAreaView>
-          <View>
-            <Text className="text-base text-center text-red-500 font-pjs-extrabold">
-              Penjual tidak ditemukan!
-            </Text>
-          </View>
-        </SafeAreaView>
-      </>
-    );
+  if (!seller?.data) return <NotFound withHeader>Penjual tidak ditemukan!</NotFound>;
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: "Penjual",
-          headerTitleStyle: {
-            fontFamily: "PlusJakartaSans-Bold",
-            fontSize: 20,
-            color: "#1B1717",
-          },
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: "#F8F8F9",
-          },
-          headerShadowVisible: false,
-          headerLeft: () => <BackButton />,
-        }}
-      />
+      <Header title="Penjual" withBackButton />
       <SafeAreaView className="h-full min-h-full bg-[#F8F8F9]">
         <View
           className="flex items-center h-full w-full mt-[-15px] min-h-full"

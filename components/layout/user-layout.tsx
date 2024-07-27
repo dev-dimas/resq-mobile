@@ -24,6 +24,7 @@ export default function UserLayout({
     await queryClient.invalidateQueries({ queryKey: ["favorite"] });
     await queryClient.invalidateQueries({ queryKey: ["subscription"] });
     setRefreshing(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -25,7 +25,7 @@ export default function ButtonDeleteFavorites() {
         text2: "Seluruh daftar favorit dihapus",
       });
     },
-    onError: async (error) => {
+    onError: async () => {
       Toast.show({
         type: "error",
         text1: "Gagal",

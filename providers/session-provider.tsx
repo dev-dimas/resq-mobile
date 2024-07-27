@@ -30,15 +30,15 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setUser(data);
-  }, [token, data]);
+  }, [token, data, setUser]);
 
   useEffect(() => {
     setFavorite(favoriteData);
-  }, [favoriteData]);
+  }, [favoriteData, setFavorite]);
 
   useEffect(() => {
     setSubscription(subscriptionData);
-  }, [subscriptionData]);
+  }, [subscriptionData, setSubscription]);
 
   if (!isFontsLoaded || (token && !user?.data)) {
     return null;

@@ -1,8 +1,8 @@
 import SubscriptionCard from "@/components/customer/subscription-card";
+import Header from "@/components/header";
 import UserLayout from "@/components/layout/user-layout";
 import { useSubscriptionStore } from "@/store/useSubscriptionStore";
 import { FlashList } from "@shopify/flash-list";
-import { Stack } from "expo-router";
 import { Text, View } from "react-native";
 
 export default function Subscription() {
@@ -11,22 +11,7 @@ export default function Subscription() {
   if (!subscription) return null;
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: "Subscription",
-          headerTitleStyle: {
-            fontFamily: "PlusJakartaSans-Bold",
-            fontSize: 20,
-            color: "#1B1717",
-          },
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: "#F8F8F9",
-          },
-          headerShadowVisible: false,
-        }}
-      />
+      <Header title="Subscription" />
       <UserLayout scrollViewClassname="mt-[-10px]">
         <FlashList
           data={subscription.data}

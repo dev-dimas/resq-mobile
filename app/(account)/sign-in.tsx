@@ -54,6 +54,8 @@ export default function SignIn() {
             control={control}
             label="Email"
             editable={!signInRequest.isPending}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
           <InputField
             name="password"
@@ -61,6 +63,7 @@ export default function SignIn() {
             label="Kata Sandi"
             type="password"
             editable={!signInRequest.isPending}
+            autoCapitalize="none"
           />
         </View>
 

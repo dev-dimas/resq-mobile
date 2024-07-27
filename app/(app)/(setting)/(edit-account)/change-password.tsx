@@ -1,7 +1,8 @@
 import { changePassword } from "@/api/account";
-import BackButton from "@/components/back-button";
 import Button from "@/components/button";
+import Header from "@/components/header";
 import InputField from "@/components/input-field";
+import UserLayout from "@/components/layout/user-layout";
 import {
   TChangePasswordSchema,
   changePasswordSchema,
@@ -10,10 +11,9 @@ import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Stack, router } from "expo-router";
+import { router } from "expo-router";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Dimensions, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function ChangePassword() {
@@ -21,6 +21,22 @@ export default function ChangePassword() {
   const { user } = useSession();
   const changePasswordRequest = useMutation({
     mutationFn: (data: TChangePasswordSchema) => changePassword(data, token!),
+    onSuccess: () => {
+      Toast.show({
+        type: "success",
+        text1: "Sukses",
+        text2: "Kata sandi berhasil diperbarui",
+      });
+    },
+    onError: (error) => {
+      if (error.message === "Forbidden") {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Kata sandi saat ini tidak sesuai!",
+        });
+      }
+    },
   });
 
   const form = useForm({
@@ -30,100 +46,55 @@ export default function ChangePassword() {
   const { control } = form;
 
   const onSubmit: SubmitHandler<TChangePasswordSchema> = async (data) => {
-    try {
-      const response = await changePasswordRequest.mutateAsync(data);
-      if (response.error) throw new Error(response.message);
+    await changePasswordRequest.mutateAsync(data);
 
-      router.navigate(
-        typeof user?.data.subscriber === "number" ? "/seller/home" : "/customer/home"
-      );
-
-      Toast.show({
-        type: "success",
-        text1: "Sukses",
-        text2: "Kata sandi berhasil diperbarui",
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message === "Forbidden") {
-          Toast.show({
-            type: "error",
-            text1: "Gagal",
-            text2: "Kata sandi saat ini tidak sesuai!",
-          });
-        }
-      }
-      return;
-    }
+    router.navigate(
+      typeof user?.data.subscriber === "number" ? "/seller/home" : "/customer/home"
+    );
   };
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: "Ubah Kata Sandi",
-          headerTitleStyle: {
-            fontFamily: "PlusJakartaSans-Bold",
-            fontSize: 20,
-            color: "#1B1717",
-          },
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: "#F8F8F9",
-          },
-          headerShadowVisible: false,
-          headerLeft: () => <BackButton />,
-        }}
-      />
-      <SafeAreaView className="h-full bg-[#F8F8F9]">
-        <ScrollView className="mt-[-15px]">
-          <View
-            className="flex items-center flex-1 w-full px-6 pb-8"
-            style={{
-              minWidth: Dimensions.get("window").width,
-            }}
-          >
-            <View className="w-full mt-2">
-              <FormProvider {...form}>
-                <View style={{ rowGap: 8 }}>
-                  <InputField
-                    name="currentPassword"
-                    control={control}
-                    label="Kata Sandi Saat Ini"
-                    placeholder="Masukkan kata sandi saat ini"
-                    type="password"
-                    editable={!changePasswordRequest.isPending}
-                  />
-                  <InputField
-                    name="newPassword"
-                    control={control}
-                    label="Kata Sandi Baru"
-                    placeholder="Masukkan kata sandi baru"
-                    type="password"
-                    editable={!changePasswordRequest.isPending}
-                  />
-                  <InputField
-                    name="confirmPassword"
-                    control={control}
-                    label="Konfirmasi Kata Sandi Baru"
-                    placeholder="Masukkan konfirmasi kata sandi baru"
-                    type="password"
-                    editable={!changePasswordRequest.isPending}
-                  />
-                </View>
-                <Button
-                  onSubmit={onSubmit}
-                  containerStyles="bg-[#FF3B30] w-full mt-7"
-                  isLoading={changePasswordRequest.isPending}
-                >
-                  Ubah Kata Sandi
-                </Button>
-              </FormProvider>
+      <Header title="Ubah Kata Sandi" withBackButton />
+      <UserLayout scrollViewClassname="mt-[-15px]">
+        <View className="w-full mt-2">
+          <FormProvider {...form}>
+            <View style={{ rowGap: 8 }}>
+              <InputField
+                name="currentPassword"
+                control={control}
+                label="Kata Sandi Saat Ini"
+                placeholder="Masukkan kata sandi saat ini"
+                type="password"
+                editable={!changePasswordRequest.isPending}
+              />
+              <InputField
+                name="newPassword"
+                control={control}
+                label="Kata Sandi Baru"
+                placeholder="Masukkan kata sandi baru"
+                type="password"
+                editable={!changePasswordRequest.isPending}
+              />
+              <InputField
+                name="confirmPassword"
+                control={control}
+                label="Konfirmasi Kata Sandi Baru"
+                placeholder="Masukkan konfirmasi kata sandi baru"
+                type="password"
+                editable={!changePasswordRequest.isPending}
+              />
             </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+            <Button
+              onSubmit={onSubmit}
+              containerStyles="bg-[#FF3B30] w-full mt-7"
+              isLoading={changePasswordRequest.isPending}
+            >
+              Ubah Kata Sandi
+            </Button>
+          </FormProvider>
+        </View>
+      </UserLayout>
     </>
   );
 }

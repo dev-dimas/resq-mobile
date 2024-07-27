@@ -1,13 +1,14 @@
-import BackButton from "@/components/back-button";
 import FavoriteButton from "@/components/customer/favorite-button";
 import SellerAddress from "@/components/customer/seller-address";
 import SubscribeButton from "@/components/customer/subscribe-button";
+import Header from "@/components/header";
 import ImageViewer from "@/components/image-viewer";
+import NotFound from "@/components/not-found";
 import { priceToRupiah } from "@/lib/utils";
 import { icons } from "constants/";
 import env from "env";
 import { Image } from "expo-image";
-import { Stack, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import useProductById from "hooks/query/useProductById";
 import { useEffect, useState } from "react";
 import {
@@ -33,35 +34,7 @@ export default function ProductDetail() {
     return null;
   }
 
-  if (!data?.data)
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            headerShown: true,
-            headerTitle: "Detail Not Found!",
-            headerTitleStyle: {
-              fontFamily: "PlusJakartaSans-Bold",
-              fontSize: 20,
-              color: "#1B1717",
-            },
-            headerTitleAlign: "center",
-            headerStyle: {
-              backgroundColor: "#F8F8F9",
-            },
-            headerShadowVisible: false,
-            headerLeft: () => <BackButton />,
-          }}
-        />
-        <SafeAreaView>
-          <View>
-            <Text className="text-base text-center text-red-500 font-pjs-extrabold">
-              Produk tidak ditemukan!
-            </Text>
-          </View>
-        </SafeAreaView>
-      </>
-    );
+  if (!data?.data) return <NotFound withHeader>Produk tidak ditemukan!</NotFound>;
 
   const handleOpenMaps = () => {
     const scheme = Platform.select({ ios: "maps://0,0?q=", android: "geo:0,0?q=" });
@@ -77,21 +50,10 @@ export default function ProductDetail() {
 
   return (
     <>
-      <Stack.Screen
+      <Header
+        title="Detail"
+        withBackButton
         options={{
-          headerShown: true,
-          headerTitle: "Detail",
-          headerTitleStyle: {
-            fontFamily: "PlusJakartaSans-Bold",
-            fontSize: 20,
-            color: "#1B1717",
-          },
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: "#F8F8F9",
-          },
-          headerShadowVisible: false,
-          headerLeft: () => <BackButton />,
           headerRight: () => (
             <FavoriteButton
               productId={data.data.product.id}
