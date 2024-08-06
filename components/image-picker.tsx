@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ClassValue } from "clsx";
-import { icons, images } from "constants/";
+import { icons, images } from "@/constants";
 import { Image } from "expo-image";
 import * as ExpoImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import { Text, TouchableOpacity } from "react-native";
 import Constants from "expo-constants";
 import ModalSelect from "./modal-select";
 import ImageViewer from "./image-viewer";
-import env from "env";
+import env from "@/env";
 
 type Props = {
   name: string;
@@ -101,7 +101,11 @@ export default function ImagePicker({
           >
             <Image
               source={value ? { uri: value } : imagePlaceholder}
-              className={cn("w-24 h-24 rounded-full", imageStyles)}
+              className={cn(
+                "w-24 h-24 rounded-full",
+                imageStyles,
+                !value && "border border-slate-300"
+              )}
               contentFit="cover"
             />
           </TouchableOpacity>

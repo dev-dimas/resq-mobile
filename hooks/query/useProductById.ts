@@ -1,14 +1,14 @@
 import { getProductById } from "@/api/product";
 import { useToken } from "@/store/useToken";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { Account } from "types/account.type";
-import { Product } from "types/product.type";
-import { Seller } from "types/sellert.type";
+import { Account } from "@/types/account.type";
+import { Product } from "@/types/product.type";
+import { Seller } from "@/types/sellert.type";
 
 type TProductById = {
   product: Product & {
-    seller: Pick<Seller, "latitude" | "longitude"> & {
-      account: Pick<Account, "name" | "avatar">;
+    seller: Pick<Seller, "latitude" | "longitude" | "address"> & {
+      account: Pick<Account, "name" | "avatar" | "avatarBlurHash">;
       subscriber: number;
     };
   } & { distance: number };

@@ -1,4 +1,4 @@
-import env from "env";
+import env from "@/env";
 
 type TMethodRequest = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 type TFetchOptions<T extends TMethodRequest> = T extends "GET"
@@ -30,7 +30,7 @@ class CoreAPI {
   }: TFetchOptions<T>) {
     try {
       let headers: Record<string, string> = {
-        accept: "aplication/json",
+        accept: "*/*",
         "Content-Type": "application/json",
       };
 
@@ -55,11 +55,6 @@ class CoreAPI {
       });
 
       const json = await res.json();
-
-      console.log("LOG FROM CORE.TS", JSON.stringify(json));
-      if (res.status !== 200 && res.status !== 201) {
-        throw new Error(json.message);
-      }
 
       return json;
     } catch (error) {

@@ -9,6 +9,7 @@ export default function Header({
 }: {
   withBackButton?: boolean;
   title: string;
+  isLoading?: boolean;
 } & ComponentProps<typeof Stack.Screen>) {
   return (
     <Stack.Screen

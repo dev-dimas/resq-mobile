@@ -6,24 +6,30 @@ import {
 } from "react-native-toast-message";
 
 export const toastConfig: ToastConfig = {
-  success: (props: BaseToastProps) => (
-    <BaseToast
-      {...props}
-      text1Style={{
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 16,
-      }}
-      text2Style={{
-        fontFamily: "PlusJakartaSans-Regular",
-        fontSize: 14,
-        color: "black",
-      }}
-      style={{
-        borderLeftColor: "#22c55e",
-        backgroundColor: "#dcfce7",
-      }}
-    />
-  ),
+  success: (props: BaseToastProps) => {
+    if (props.text1 === "" || props.text1 === undefined || props.text1 === null) {
+      return <></>;
+    } else {
+      return (
+        <BaseToast
+          {...props}
+          text1Style={{
+            fontFamily: "PlusJakartaSans-Bold",
+            fontSize: 16,
+          }}
+          text2Style={{
+            fontFamily: "PlusJakartaSans-Regular",
+            fontSize: 14,
+            color: "black",
+          }}
+          style={{
+            borderLeftColor: "#22c55e",
+            backgroundColor: "#dcfce7",
+          }}
+        />
+      );
+    }
+  },
   error: (props: BaseToastProps) => (
     <ErrorToast
       {...props}

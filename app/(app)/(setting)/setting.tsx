@@ -5,20 +5,23 @@ import Modal from "@/components/modal";
 import SecureStore from "@/lib/secure-store";
 import { useToken } from "@/store/useToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { icons } from "constants/";
+import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { useSession } from "@/store/useSession";
 
 export default function Setting() {
   const [isModalLogoutOpen, setIsModalLogoutOpen] = useState<boolean>(false);
   const { token, setToken } = useToken();
+  const { setUser } = useSession();
   const queryClient = useQueryClient();
   const logoutRequest = useMutation({
     mutationFn: () => logout(token!),
     onSuccess: async () => {
+      setUser(undefined);
       await SecureStore.deleteItemAsync("token");
       queryClient.clear();
 

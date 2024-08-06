@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { ProductNearby } from "data/product.data";
+import { ProductNearby } from "@/data/product.data";
 import fs from "fs";
 import path from "path";
 

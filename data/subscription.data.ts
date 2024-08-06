@@ -1,4 +1,4 @@
-import { images } from "constants/";
+import { images } from "@/constants";
 import { ProductNearby, products } from "./product.data";
 
 export type SubscriptionWithProducts = {

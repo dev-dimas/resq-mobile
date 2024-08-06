@@ -1,4 +1,4 @@
-import { TFavorite } from "hooks/query/useGetFavorite";
+import { TFavorite } from "@/hooks/query/useGetFavorite";
 import { create } from "zustand";
 
 type TFavoriteStore = {

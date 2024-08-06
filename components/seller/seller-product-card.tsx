@@ -1,11 +1,11 @@
 import { priceToRupiah } from "@/lib/utils";
-import { icons } from "constants/";
-import env from "env";
+import { icons } from "@/constants";
+import env from "@/env";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Dispatch, SetStateAction } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Product } from "types/product.type";
+import { Product } from "@/types/product.type";
 
 type Props = {
   product: Product;
@@ -28,6 +28,8 @@ export default function SellerProductCard({
           <Image
             source={env.EXPO_PUBLIC_API_URL + product.images[0]}
             contentFit="cover"
+            placeholder={product.imageBlurHash}
+            placeholderContentFit="cover"
             className="w-[70px] h-[70px] rounded-full"
           />
           <View className="flex flex-row items-center justify-between flex-1">
@@ -49,7 +51,7 @@ export default function SellerProductCard({
               <TouchableOpacity
                 activeOpacity={0.7}
                 className="p-2 bg-[#FDBF43] rounded-lg w-[30px] h-[30px]"
-                onPress={() => router.push(`/seller/edit-product/${product.id}`)}
+                onPress={() => router.navigate(`/seller/edit-product/${product.id}`)}
               >
                 <Image
                   source={icons.pencil}

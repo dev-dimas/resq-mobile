@@ -1,15 +1,15 @@
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "baseUrl": ".",
     "paths": {
-      "@/api/*": ["api/*"],
-      "@/components/*": ["components/*"],
-      "@/constants": ["constants"],
-      "@/lib/*": ["lib/*"],
-      "@/schemas/*": ["schemas/*"],
-      "@/store/*": ["store/*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
-  "extends": "expo/tsconfig.base"
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }

@@ -4,11 +4,11 @@ import UserLayout from "@/components/layout/user-layout";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
-import { icons } from "constants/";
+import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
-import { Product } from "types/product.type";
+import { Product } from "@/types/product.type";
 
 type TProduct = Product & { distance: number; latitude: string; longitude: string };
 

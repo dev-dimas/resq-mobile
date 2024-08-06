@@ -8,6 +8,10 @@ node_modules/
 dist/
 /%ProgramData%/
 web-build/
+/google-services.json
+android/
+*.apk
+*.aab
 
 # Native
 *.orig.*
@@ -37,10 +41,10 @@ yarn-error.*
 *.tsbuildinfo
 
 # private assets
-assets/images
-assets/icons
-assets/*.png
-assets/adaptive-icon.png
-assets/favicon.png
-assets/icon.png
-assets/splash.png
+# assets/images
+# assets/icons
+# assets/*.png
+# assets/adaptive-icon.png
+# assets/favicon.png
+# assets/icon.png
+# assets/splash.png

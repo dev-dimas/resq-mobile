@@ -1,6 +1,6 @@
-import { images } from "constants/";
-import { Account } from "types/account.type";
-import { Seller } from "types/sellert.type";
+import { images } from "@/constants/";
+import { Account } from "@/types/account.type";
+import { Seller } from "@/types/sellert.type";
 
 export type SellerOnDetail = {
   subscriber: number;

@@ -8,13 +8,12 @@ import { Text, View } from "react-native";
 export default function Subscription() {
   const { subscription } = useSubscriptionStore();
 
-  if (!subscription) return null;
   return (
     <>
       <Header title="Subscription" />
       <UserLayout scrollViewClassname="mt-[-10px]">
         <FlashList
-          data={subscription.data}
+          data={subscription?.data}
           estimatedItemSize={109}
           estimatedListSize={{ width: 355, height: 805 }}
           renderItem={({ item }) => {
@@ -31,7 +30,6 @@ export default function Subscription() {
             </View>
           )}
         />
-        {/* <SubscriptionCard /> */}
       </UserLayout>
     </>
   );

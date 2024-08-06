@@ -13,7 +13,7 @@ export default function NearbySales() {
     <View className="mt-5">
       <View className="flex flex-row items-center justify-between">
         <Text className="font-pjs-bold text-base text-[#1B1717]">Penjualan Terdekat</Text>
-        {products?.length && products.length > 1 && (
+        {products?.length && products.length > 1 ? (
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => router.navigate("/product/nearby")}
@@ -22,6 +22,8 @@ export default function NearbySales() {
               Lihat Semua
             </Text>
           </TouchableOpacity>
+        ) : (
+          <></>
         )}
       </View>
 

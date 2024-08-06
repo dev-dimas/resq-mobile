@@ -1,8 +1,8 @@
 import { getFavoriteList } from "@/api/customer";
 import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
+import { Product } from "@/types/product.type";
 import { useQuery } from "@tanstack/react-query";
-import { Product } from "types/product.type";
 
 export type TFavorite = (Product & {
   distance: number;
@@ -21,7 +21,7 @@ export default function useGetFavorite() {
     queryKey: ["favorite", token],
     queryFn: () => getFavoriteList(token!),
     staleTime: 2000,
-    enabled: !!token && !!(typeof user?.data.subscriber !== "number"),
+    enabled: !!user && typeof user?.data.subscriber === "undefined",
   });
 
   return { ...favorite };

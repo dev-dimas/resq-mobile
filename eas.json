@@ -1,0 +1,45 @@
+{
+  "cli": {
+    "version": ">= 10.2.1"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://resq.dimaslabs.com",
+        "EXPO_PUBLIC_MAPBOX_PUBLIC": "pk.eyJ1IjoiZGV2LWRpbWFzIiwiYSI6ImNsemEwNWJzMzBibncya3B2enhkbGpydWIifQ.HiasoiRXMk8mjkS4sTMuXw"
+      },
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "preview": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://resq.dimaslabs.com",
+        "EXPO_PUBLIC_MAPBOX_PUBLIC": "pk.eyJ1IjoiZGV2LWRpbWFzIiwiYSI6ImNsemEwNWJzMzBibncya3B2enhkbGpydWIifQ.HiasoiRXMk8mjkS4sTMuXw"
+      },
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://resq.dimaslabs.com",
+        "EXPO_PUBLIC_MAPBOX_PUBLIC": "pk.eyJ1IjoiZGV2LWRpbWFzIiwiYSI6ImNsemEwNWJzMzBibncya3B2enhkbGpydWIifQ.HiasoiRXMk8mjkS4sTMuXw"
+      },
+      "distribution": "internal",
+      "ios": {},
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

@@ -9,7 +9,7 @@ import { Text } from "react-native";
 export default function Nearby() {
   const { user } = useSession();
 
-  if (!user?.data.products) {
+  if (!user?.data.products && user !== null) {
     return (
       <NotFound withHeader headerProps={{ title: "Penjualan Terdekat" }}>
         Tidak ada penjualan didekatmu
@@ -22,7 +22,7 @@ export default function Nearby() {
       <Header title="Penjualan Terdekat" withBackButton />
       <UserLayout scrollViewClassname="mt-[-15px]">
         <FlashList
-          data={user.data.products.filter((product) => product.distance <= 1)}
+          data={user?.data.products.filter((product) => product.distance <= 1)}
           estimatedItemSize={109}
           estimatedListSize={{ width: 355, height: 805 }}
           renderItem={({ item }) => {

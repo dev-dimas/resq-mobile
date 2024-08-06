@@ -1,4 +1,4 @@
-import { TSubscription } from "hooks/query/useGetSubscription";
+import { TSubscription } from "@/hooks/query/useGetSubscription";
 import { create } from "zustand";
 
 type TSubscriptionStore = {

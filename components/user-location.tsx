@@ -1,8 +1,7 @@
-import { cn, getAddress } from "@/lib/utils";
+import { icons } from "@/constants";
+import { cn } from "@/lib/utils";
 import { useSession } from "@/store/useSession";
-import { icons } from "constants/";
 import { Image } from "expo-image";
-import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
@@ -11,16 +10,12 @@ export default function UserLocation() {
   const { user } = useSession();
 
   useEffect(() => {
-    if (user?.data.latitude && user?.data.longitude) {
-      Location.reverseGeocodeAsync({
-        latitude: parseFloat(user.data.latitude),
-        longitude: parseFloat(user.data.longitude),
-      }).then((res) => {
-        const geoLocation = res[0];
-        setLocation(getAddress(geoLocation.formattedAddress!));
-      });
+    if (user?.data.address) {
+      setLocation(user?.data.address);
+    } else {
+      setLocation("-------");
     }
-  }, [user]);
+  }, [user?.data.address]);
 
   return (
     <>

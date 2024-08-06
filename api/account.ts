@@ -57,7 +57,7 @@ export async function changePassword(data: TChangePasswordSchema, token: string)
 }
 
 export async function updateLocation(
-  data: { latitude: number; longitude: number },
+  data: { latitude: number; longitude: number; address: string },
   token: string
 ) {
   const result = await coreApi.fetch({
@@ -68,4 +68,13 @@ export async function updateLocation(
   });
 
   return result;
+}
+
+export async function setNotificationToken(data: { token: string }, token: string) {
+  return await coreApi.fetch({
+    url: "/account/notification",
+    method: "POST",
+    data,
+    token,
+  });
 }

@@ -6,6 +6,7 @@ export type Product = {
   description: string;
   price: string;
   images: string[];
+  imageBlurHash: string;
   startTime: Date;
   endTime: Date;
   isDaily: boolean;

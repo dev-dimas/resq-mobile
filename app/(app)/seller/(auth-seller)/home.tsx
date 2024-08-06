@@ -8,14 +8,14 @@ import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { icons } from "constants/";
-import env from "env";
+import { icons } from "@/constants";
+import env from "@/env";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { Product } from "types/product.type";
+import { Product } from "@/types/product.type";
 
 export default function Home() {
   const { user } = useSession();
@@ -84,6 +84,10 @@ export default function Home() {
                   : icons.user
               }
               contentFit="cover"
+              placeholder={
+                user?.data.avatarBlurHash ? user.data.avatarBlurHash : undefined
+              }
+              placeholderContentFit={user?.data.avatarBlurHash ? "cover" : undefined}
               className={cn("w-8 h-8 rounded-lg")}
             />
           </Link>
@@ -110,7 +114,7 @@ export default function Home() {
           style={{
             columnGap: 10,
           }}
-          onPress={() => router.push("/seller/(auth-seller)/create-product")}
+          onPress={() => router.navigate("/seller/(auth-seller)/create-product")}
         >
           <Image
             source={icons.plus}

@@ -4,16 +4,19 @@ import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Product } from "types/product.type";
+import { Product } from "@/types/product.type";
 
 export type DashboardResponse = {
   name: string;
   email: string;
   avatar: string;
+  avatarBlurHash: string;
   latitude: string;
   longitude: string;
+  address: string;
   subscriber?: number;
   products: (Product & { distance: number; latitude: string; longitude: string })[];
+  expoPushToken?: string;
 };
 
 export default function useDashboard() {

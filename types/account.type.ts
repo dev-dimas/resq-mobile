@@ -4,6 +4,7 @@ export type Account = {
   name: string;
   password: string;
   avatar?: string;
+  avatarBlurHash?: string;
   isSeller: boolean;
   token?: string;
   createdAt: Date;

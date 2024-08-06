@@ -22,7 +22,7 @@ import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { Category } from "types/category.type";
+import { Category } from "@/types/category.type";
 
 export default function EditProduct() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

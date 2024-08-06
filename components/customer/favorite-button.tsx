@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
 import { useToken } from "@/store/useToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { icons } from "constants/";
+import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
+import { useEffect, useState } from "react";
 
 type Props = {
   productId: string;
@@ -20,6 +21,9 @@ export default function FavoriteButton({
   imageClassname,
 }: Props) {
   const { favorite } = useFavoriteStore();
+  const [isFavorite, setIsFavorite] = useState(
+    !!favorite?.data.find((product) => product.id === productId)
+  );
   const { token } = useToken();
   const queryClient = useQueryClient();
   const addFavoriteRequest = useMutation({
@@ -28,6 +32,7 @@ export default function FavoriteButton({
       await queryClient.invalidateQueries({ queryKey: ["favorite"] });
     },
     onError: async (error) => {
+      await queryClient.invalidateQueries({ queryKey: ["favorite"] });
       if (error.message === "Conflict") {
         Toast.show({
           type: "error",
@@ -49,6 +54,7 @@ export default function FavoriteButton({
       await queryClient.invalidateQueries({ queryKey: ["favorite"] });
     },
     onError: async (error) => {
+      await queryClient.invalidateQueries({ queryKey: ["favorite"] });
       if (error.message === "Conflict") {
         Toast.show({
           type: "error",
@@ -65,19 +71,26 @@ export default function FavoriteButton({
     },
   });
 
-  const isFavorite = favorite?.data.find((product) => product.id === productId);
-
   const handleAddToFavorite = async () => {
     if (isFavorite) return;
     if (addFavoriteRequest.isPending) return;
+    setIsFavorite(true);
     await addFavoriteRequest.mutateAsync();
   };
 
   const handleRemoveFromFavorite = async () => {
     if (!isFavorite) return;
     if (removeFavoriteRequest.isPending) return;
+    setIsFavorite(false);
     await removeFavoriteRequest.mutateAsync();
   };
+
+  useEffect(() => {
+    if (productId !== "")
+      setIsFavorite(!!favorite?.data.find((product) => product.id === productId));
+  }, [productId]);
+
+  if (productId === "") return null;
 
   return (
     <TouchableOpacity

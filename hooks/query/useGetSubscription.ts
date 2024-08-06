@@ -2,10 +2,13 @@ import { getSubscriptionList } from "@/api/customer";
 import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { useQuery } from "@tanstack/react-query";
-import { Account } from "types/account.type";
-import { Seller } from "types/sellert.type";
+import { Account } from "@/types/account.type";
+import { Seller } from "@/types/sellert.type";
 
-export type TSubscription = (Pick<Seller, "accountId" | "latitude" | "longitude"> &
+export type TSubscription = (Pick<
+  Seller,
+  "accountId" | "latitude" | "longitude" | "address"
+> &
   Pick<Account, "name" | "avatar"> & { subscriber: number })[];
 
 export default function useGetSubscription() {
@@ -19,7 +22,7 @@ export default function useGetSubscription() {
     queryKey: ["subscription", token],
     queryFn: () => getSubscriptionList(token!),
     staleTime: 2000,
-    enabled: !!token && !!(typeof user?.data.subscriber !== "number"),
+    enabled: !!user && typeof user?.data.subscriber === "undefined",
   });
 
   return { ...subscription };

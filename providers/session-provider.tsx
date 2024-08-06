@@ -4,9 +4,9 @@ import { useSession } from "@/store/useSession";
 import { useSubscriptionStore } from "@/store/useSubscriptionStore";
 import { useToken } from "@/store/useToken";
 import { SplashScreen } from "expo-router";
-import useDashboard from "hooks/query/useDashboard";
-import useGetFavorite from "hooks/query/useGetFavorite";
-import useGetSubscription from "hooks/query/useGetSubscription";
+import useDashboard from "@/hooks/query/useDashboard";
+import useGetFavorite from "@/hooks/query/useGetFavorite";
+import useGetSubscription from "@/hooks/query/useGetSubscription";
 import { ReactNode, useEffect } from "react";
 
 export default function SessionProvider({ children }: { children: ReactNode }) {

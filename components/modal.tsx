@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { icons } from "constants/";
+import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import { Modal as RNModal, Text, TouchableOpacity, View } from "react-native";

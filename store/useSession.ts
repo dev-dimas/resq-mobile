@@ -1,4 +1,4 @@
-import { DashboardResponse } from "hooks/query/useDashboard";
+import { DashboardResponse } from "@/hooks/query/useDashboard";
 import { create } from "zustand";
 
 type TUser = {

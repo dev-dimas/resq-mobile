@@ -1,4 +1,4 @@
-import { icons } from "constants/";
+import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 

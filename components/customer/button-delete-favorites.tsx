@@ -1,6 +1,6 @@
 import { TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { icons } from "constants/";
+import { icons } from "@/constants";
 import { Image } from "expo-image";
 import Modal from "../modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
