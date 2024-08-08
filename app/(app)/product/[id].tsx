@@ -54,11 +54,19 @@ export default function ProductDetail() {
         isLoading={isPending}
         options={{
           headerRight: () => (
-            <FavoriteButton
-              productId={data?.data.product.id || ""}
-              buttonClassname="w-5 h-5 mr-2"
-              imageClassname="w-5 h-5"
-            />
+            <Skeleton
+              isLoading={!data?.data.product.id && isPending}
+              width={20}
+              height={20}
+              marginRight={8}
+              borderRadius={5}
+            >
+              <FavoriteButton
+                productId={data?.data.product.id || ""}
+                buttonClassname="w-5 h-5 mr-2"
+                imageClassname="w-5 h-5"
+              />
+            </Skeleton>
           ),
         }}
       />

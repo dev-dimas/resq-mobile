@@ -30,7 +30,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       "android.permission.ACCESS_FINE_LOCATION",
     ],
     package: "com.dimaslabs.resq",
-    googleServicesFile: "./google-services.json",
+    // googleServicesFile: "./google-services.json",
   },
   web: {
     bundler: "metro",

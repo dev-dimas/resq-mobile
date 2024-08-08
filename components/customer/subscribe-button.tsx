@@ -116,7 +116,7 @@ export default function SubscribeButton({
   }, [sellerId]);
 
   return (
-    <Skeleton isLoading={isLoading || sellerId === ""} width={105} height={36}>
+    <Skeleton isLoading={isLoading || sellerId === ""} width={105} height={38}>
       <TouchableOpacity
         activeOpacity={0.7}
         className={cn(
