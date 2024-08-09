@@ -28,7 +28,7 @@ export default function FavoriteButton({
   const queryClient = useQueryClient();
   const addFavoriteRequest = useMutation({
     mutationFn: () => addToFavorite(productId, token!),
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: ["favorite"] });
     },
     onError: async (error) => {

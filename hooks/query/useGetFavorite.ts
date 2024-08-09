@@ -13,6 +13,7 @@ export type TFavorite = (Product & {
 export default function useGetFavorite() {
   const { token } = useToken();
   const { user } = useSession();
+  const isCustomer = (!!user?.data?.subscriber && !user.data.isAdmin) || false;
 
   const favorite = useQuery<{
     message: string;
@@ -21,7 +22,7 @@ export default function useGetFavorite() {
     queryKey: ["favorite", token],
     queryFn: () => getFavoriteList(token!),
     staleTime: 2000,
-    enabled: !!user && typeof user?.data.subscriber === "undefined",
+    enabled: !!user && isCustomer,
   });
 
   return { ...favorite };

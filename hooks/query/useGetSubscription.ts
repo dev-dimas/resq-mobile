@@ -14,6 +14,7 @@ export type TSubscription = (Pick<
 export default function useGetSubscription() {
   const { token } = useToken();
   const { user } = useSession();
+  const isCustomer = (!!user?.data?.subscriber && !user.data.isAdmin) || false;
 
   const subscription = useQuery<{
     message: string;
@@ -22,7 +23,7 @@ export default function useGetSubscription() {
     queryKey: ["subscription", token],
     queryFn: () => getSubscriptionList(token!),
     staleTime: 2000,
-    enabled: !!user && typeof user?.data.subscriber === "undefined",
+    enabled: !!user && isCustomer,
   });
 
   return { ...subscription };

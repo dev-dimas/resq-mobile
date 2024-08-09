@@ -15,6 +15,7 @@ export type DashboardResponse = {
   longitude: string;
   address: string;
   subscriber?: number;
+  isAdmin?: boolean;
   products: (Product & { distance: number; latitude: string; longitude: string })[];
   expoPushToken?: string;
 };
@@ -34,7 +35,7 @@ export default function useDashboard() {
   });
 
   useEffect(() => {
-    if (dashboard.failureReason?.message === "Unauthorized") {
+    if (dashboard.data?.message === "Unauthorized") {
       SecureStore.deleteItemAsync("token");
       setToken(null);
       setUser(undefined);
