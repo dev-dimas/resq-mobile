@@ -7,7 +7,7 @@
 <img src="https://github.com/dev-dimas/resq-mobile/blob/master/assets/images/feature-graphic.png?raw=true" style="padding-bottom: 15px" />
 </p>
 
-Welcome to the Resq Backend repository! This project contains the code for the Resq Mobile App, a platform dedicated to connecting leftover food sellers with potential buyers. Leftover food refers to items that need to be sold quickly as they are nearing their expiration date. In a world where food waste is a pressing issue, Resq provides an innovative solution to reduce waste by making leftover food accessible to those nearby, while also benefiting both sellers and buyers.
+Welcome to the Resq Mobile repository! This project contains the code for the Resq Mobile App, a platform dedicated to connecting leftover food sellers with potential buyers. Leftover food refers to items that need to be sold quickly as they are nearing their expiration date. In a world where food waste is a pressing issue, Resq provides an innovative solution to reduce waste by making leftover food accessible to those nearby, while also benefiting both sellers and buyers.
 
 ## Table of Contents
 
@@ -60,7 +60,7 @@ Resq Mobile app are built using cutting-edge and reliable technologies, includin
 
 ## Installation
 
-To get started with Resq Backend, follow these steps:
+To get started with Resq Mobile, follow these steps:
 
 1. Clone the repository
 
