@@ -28,7 +28,7 @@ export default function SignUp() {
     resolver: zodResolver(signUpSchema),
   });
 
-  const { control } = form;
+  const { control, setFocus } = form;
 
   const onSubmit: SubmitHandler<TSignUpSchema> = async (data) => {
     const { confirmPassword: _confirmPassword, ...signUpData } = data;
@@ -75,6 +75,8 @@ export default function SignUp() {
               label="Nama"
               containerStyles="w-1/2"
               editable={!signUpRequest.isPending || !signInRequest.isPending}
+              returnKeyType="next"
+              onSubmitEditing={() => setFocus("asCustomer")}
             />
             <RolePicker
               name="asCustomer"
@@ -91,6 +93,9 @@ export default function SignUp() {
             editable={!signUpRequest.isPending || !signInRequest.isPending}
             keyboardType="email-address"
             autoCapitalize="none"
+            returnKeyType="next"
+            onSubmitEditing={() => setFocus("password")}
+            blurOnSubmit={false}
           />
           <InputField
             name="password"
@@ -99,6 +104,9 @@ export default function SignUp() {
             type="password"
             editable={!signUpRequest.isPending || !signInRequest.isPending}
             autoCapitalize="none"
+            returnKeyType="next"
+            onSubmitEditing={() => setFocus("confirmPassword")}
+            blurOnSubmit={false}
           />
           <InputField
             name="confirmPassword"

@@ -32,7 +32,7 @@ const InputField = React.memo(
         name={name}
         control={control}
         defaultValue={defaultValue || ""}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
+        render={({ field: { onChange, value, onBlur, ref }, fieldState: { error } }) => (
           <View className={cn(containerStyles)}>
             {label && (
               <View className="flex items-start px-3">
@@ -52,12 +52,14 @@ const InputField = React.memo(
                   error && "bg-red-100 border-red-500"
                 )}
                 value={value}
+                onBlur={onBlur}
                 onChangeText={
                   props.keyboardType === "numeric"
                     ? (text) => onChange(text.replace(/[^0-9]/g, ""))
                     : onChange
                 }
                 secureTextEntry={type === "password" && !showText}
+                ref={ref}
                 {...props}
               />
 

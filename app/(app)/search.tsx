@@ -68,6 +68,7 @@ export default function Search() {
                 {keyword && `Tidak dapat menemukan ${keyword}`}
               </Text>
             }
+            keyboardShouldPersistTaps="handled"
           />
         </View>
       </UserLayout>

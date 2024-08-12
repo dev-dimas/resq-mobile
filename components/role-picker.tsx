@@ -25,7 +25,7 @@ export default function RolePicker({
       name={name}
       control={control}
       defaultValue={"true"}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
+      render={({ field: { onChange, onBlur, value, ref }, fieldState: { error } }) => (
         <View className={cn(containerStyles)}>
           <View className="flex items-start px-3">
             <Text className="text-sm text-black font-pjs-bold">{label}</Text>
@@ -36,6 +36,7 @@ export default function RolePicker({
               enabled={editable}
               selectedValue={value}
               onValueChange={onChange}
+              onBlur={onBlur}
               style={{
                 width: "100%",
                 minHeight: 48,
@@ -44,6 +45,7 @@ export default function RolePicker({
                 fontFamily: "PlusJakartaSans-Regular",
                 color: editable ? "black" : "#B1B1B1",
               }}
+              ref={ref}
             >
               <Picker.Item label="Konsumen" value="true" />
               <Picker.Item label="Penjual" value="false" />

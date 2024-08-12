@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <SafeAreaView className="h-full bg-white">
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View
           className="flex items-center flex-1 w-full pt-5 pb-8 px-7"
           style={{

@@ -31,6 +31,7 @@ export default function UserLayout({
     <SafeAreaView className="h-full bg-[#F8F8F9]">
       <ScrollView
         className={cn(scrollViewClassname)}
+        keyboardShouldPersistTaps="handled"
         refreshControl={
           <RefreshControl
             colors={["#FF3B30"]}

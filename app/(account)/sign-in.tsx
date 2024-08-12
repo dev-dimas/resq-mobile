@@ -23,7 +23,7 @@ export default function SignIn() {
     resolver: zodResolver(signInSchema),
   });
 
-  const { control } = form;
+  const { control, setFocus } = form;
 
   const onSubmit: SubmitHandler<TSignInSchema> = async (data) => {
     const signInResponse = await signInRequest.mutateAsync(data);
@@ -56,6 +56,9 @@ export default function SignIn() {
             editable={!signInRequest.isPending}
             keyboardType="email-address"
             autoCapitalize="none"
+            returnKeyType="next"
+            onSubmitEditing={() => setFocus("password")}
+            blurOnSubmit={false}
           />
           <InputField
             name="password"
