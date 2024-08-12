@@ -3,11 +3,12 @@
 <p align="center">
 <img src="https://github.com/dev-dimas/resq-mobile/blob/master/assets/images/logo.png?raw=true" width="200" height="200" />
 </p>
+
+Welcome to the Resq Mobile repository! This project contains the code for the Resq Mobile App, a platform dedicated to connecting leftover food sellers with potential buyers. Leftover food refers to items that need to be sold quickly as they are nearing their expiration date. In a world where food waste is a pressing issue, Resq provides an innovative solution to reduce waste by making leftover food accessible to those nearby, while also benefiting both sellers and buyers.
+
 <p align="center">
 <img src="https://github.com/dev-dimas/resq-mobile/blob/master/assets/images/feature-graphic.png?raw=true" style="padding-bottom: 15px" />
 </p>
-
-Welcome to the Resq Mobile repository! This project contains the code for the Resq Mobile App, a platform dedicated to connecting leftover food sellers with potential buyers. Leftover food refers to items that need to be sold quickly as they are nearing their expiration date. In a world where food waste is a pressing issue, Resq provides an innovative solution to reduce waste by making leftover food accessible to those nearby, while also benefiting both sellers and buyers.
 
 ## Table of Contents
 
