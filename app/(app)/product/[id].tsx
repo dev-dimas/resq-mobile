@@ -91,7 +91,7 @@ export default function ProductDetail() {
               <Image
                 source={env.EXPO_PUBLIC_API_URL + data?.data.product.images[0]}
                 contentFit="cover"
-                placeholder={data?.data.product.imageBlurHash}
+                placeholder={{ blurhash: data?.data.product.imageBlurHash }}
                 placeholderContentFit="cover"
                 className="w-[254px] h-[254px] rounded-full"
               />
@@ -126,9 +126,10 @@ export default function ProductDetail() {
                           : icons.user
                       }
                       contentFit="cover"
-                      placeholder={
-                        data?.data.product.seller.account.avatarBlurHash || undefined
-                      }
+                      placeholder={{
+                        blurhash:
+                          data?.data.product.seller.account.avatarBlurHash || undefined,
+                      }}
                       placeholderContentFit="cover"
                       className="w-12 h-12 rounded-full"
                     />

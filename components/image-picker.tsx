@@ -124,23 +124,27 @@ export default function ImagePicker({
             isVisible={isModalOpen}
             selectList={[
               {
-                title: "Lihat foto",
+                title: "Lihat",
                 onPress: () => {
                   setIsModalOpen(false);
                   setIsImageViewerOpen(true);
                 },
+                icon: icons.eyeMd,
                 isAvatarDeleteMenu: false,
+                color: "#49CB5C",
               },
               {
-                title: "Ganti foto",
+                title: "Ganti",
                 onPress: () => {
                   setIsModalOpen(false);
                   pickImage(onChange);
                 },
+                icon: icons.image,
                 isAvatarDeleteMenu: false,
+                color: "#FDBF43",
               },
               {
-                title: "Hapus foto",
+                title: "Hapus",
                 onPress: async () => {
                   if (!handleDelete) return;
                   await handleDelete().then(() => {
@@ -148,7 +152,9 @@ export default function ImagePicker({
                   });
                   setIsModalOpen(false);
                 },
+                icon: icons.trash,
                 isAvatarDeleteMenu: true,
+                color: "#FF3B30",
               },
             ]}
             onClose={() => setIsModalOpen(false)}

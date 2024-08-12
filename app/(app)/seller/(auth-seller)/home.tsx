@@ -84,9 +84,7 @@ export default function Home() {
                   : icons.user
               }
               contentFit="cover"
-              placeholder={
-                user?.data.avatarBlurHash ? user.data.avatarBlurHash : undefined
-              }
+              placeholder={{ blurhash: user?.data.avatarBlurHash || undefined }}
               placeholderContentFit={user?.data.avatarBlurHash ? "cover" : undefined}
               className={cn("w-8 h-8 rounded-lg")}
             />

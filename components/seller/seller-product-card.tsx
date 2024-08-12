@@ -28,7 +28,7 @@ export default function SellerProductCard({
           <Image
             source={env.EXPO_PUBLIC_API_URL + product.images[0]}
             contentFit="cover"
-            placeholder={product.imageBlurHash}
+            placeholder={{ blurhash: product.imageBlurHash }}
             placeholderContentFit="cover"
             className="w-[70px] h-[70px] rounded-full"
           />
