@@ -87,7 +87,6 @@ export default function Home() {
         <Skeleton isLoading={user === null} height={145} marginTop={24}>
           <View className="h-[145px] flex items-center justify-center overflow-hidden rounded-lg mt-6">
             <Image
-              // source={require('@/assets/images/poster-homepage.png')}
               source={images.posterHomepage}
               contentFit="contain"
               className="object-center w-full bg-red-500 aspect-video"

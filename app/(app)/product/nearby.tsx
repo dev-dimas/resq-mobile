@@ -9,7 +9,9 @@ import { Text } from "react-native";
 export default function Nearby() {
   const { user } = useSession();
 
-  const nearbyProduct = user?.data.products.filter((product) => product.distance <= 1);
+  const nearbyProduct = user?.data.products
+    .filter((product) => product.distance <= 3)
+    .sort((a, b) => a.distance - b.distance);
 
   if (!user?.data.products && user !== null) {
     return (

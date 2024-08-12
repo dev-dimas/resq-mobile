@@ -7,6 +7,7 @@ import { useSession } from "@/store/useSession";
 export default function NearbySales() {
   const { user } = useSession();
   const products = user?.data.products
+    .filter((product) => product.distance <= 3)
     .sort((a, b) => a.distance - b.distance)
     .slice(0, 4);
   return (

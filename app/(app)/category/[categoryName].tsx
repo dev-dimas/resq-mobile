@@ -18,10 +18,13 @@ export default function CategoryName() {
     return <NotFound withHeader>Kategori {categoryName} tidak ditemukan!</NotFound>;
   }
 
-  const products = user?.data.products.filter(
-    (product) =>
-      product.categoryName === categoryName.replace(/^./, (match) => match.toUpperCase())
-  );
+  const products = user?.data.products
+    .filter(
+      (product) =>
+        product.categoryName ===
+        categoryName.replace(/^./, (match) => match.toUpperCase())
+    )
+    .sort((a, b) => a.distance - b.distance);
 
   return (
     <>
