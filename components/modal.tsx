@@ -3,16 +3,19 @@ import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import { Modal as RNModal, Text, TouchableOpacity, View } from "react-native";
+import { ReactNode } from "react";
 
 type Props = {
   isVisible: boolean;
   title: string;
-  description: string;
-  titleConfirm: string;
-  onClose: () => void;
-  onConfirm: () => void;
+  description?: string;
+  titleConfirm?: string;
+  titleCancel?: string;
+  onClose?: () => void;
+  onConfirm?: () => void;
   buttonVariant?: "red" | "green";
   isLoading?: boolean;
+  children?: ReactNode;
 };
 
 export default function Modal({
@@ -20,10 +23,12 @@ export default function Modal({
   title,
   description,
   titleConfirm,
+  titleCancel = "Batal",
   onClose,
   onConfirm,
   buttonVariant = "red",
   isLoading = false,
+  children,
 }: Props) {
   return (
     <>
@@ -43,7 +48,11 @@ export default function Modal({
               </TouchableOpacity>
             </View>
             <View className="flex px-5 py-3 bg-white">
-              <Text className="text-[#1B1717] font-pjs-medium">{description}</Text>
+              {children ? (
+                children
+              ) : (
+                <Text className="text-[#1B1717] font-pjs-medium">{description}</Text>
+              )}
             </View>
             <View
               className="flex-row justify-end px-5 py-3 bg-white rounded-b-xl"
@@ -58,25 +67,27 @@ export default function Modal({
                   className="text-sm font-pjs-medium text-slate-800/80"
                   style={{ includeFontPadding: false }}
                 >
-                  Batal
+                  {titleCancel}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                className={cn(
-                  "px-3 py-2 rounded-lg",
-                  buttonVariant === "red" ? "bg-[#FF3B30]" : "bg-[#49CB5C]"
-                )}
-                onPress={onConfirm}
-                disabled={isLoading}
-              >
-                <Text
-                  className="text-sm text-white font-pjs-medium"
-                  style={{ includeFontPadding: false }}
+              {titleConfirm && onConfirm && (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  className={cn(
+                    "px-3 py-2 rounded-lg",
+                    buttonVariant === "red" ? "bg-[#FF3B30]" : "bg-[#49CB5C]"
+                  )}
+                  onPress={onConfirm}
+                  disabled={isLoading}
                 >
-                  {isLoading ? "Loading..." : titleConfirm}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    className="text-sm text-white font-pjs-medium"
+                    style={{ includeFontPadding: false }}
+                  >
+                    {isLoading ? "Loading..." : titleConfirm}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>

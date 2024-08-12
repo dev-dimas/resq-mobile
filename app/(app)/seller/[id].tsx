@@ -14,12 +14,14 @@ import React, { useState } from "react";
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Skeleton from "@/components/skeleton";
+import Modal from "@/components/modal";
 
 export default function SellerId() {
   let { id } = useLocalSearchParams();
   id = id as string;
   const { data: seller, isPending } = useGetSellerById(id);
   const [isImageViewerVisible, setIsImageViewerVisible] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   if (!seller?.data && !isPending)
     return <NotFound withHeader>Penjual tidak ditemukan!</NotFound>;
@@ -57,9 +59,7 @@ export default function SellerId() {
                       : icons.user
                   }
                   contentFit="cover"
-                  placeholder={
-                    seller?.data?.avatarBlurHash ? seller.data?.avatarBlurHash : undefined
-                  }
+                  placeholder={{ blurhash: seller?.data?.avatarBlurHash || undefined }}
                   placeholderContentFit={
                     seller?.data?.avatarBlurHash ? "cover" : undefined
                   }
@@ -67,33 +67,40 @@ export default function SellerId() {
                 />
               </TouchableOpacity>
             </Skeleton>
-            <View className="flex justify-center flex-1 ml-3 mr-5">
-              <Skeleton isLoading={isPending} height={24}>
-                <Text
-                  className="text-base font-pjs-bold"
-                  ellipsizeMode="tail"
-                  numberOfLines={1}
-                >
-                  {seller?.data?.name}
-                </Text>
-              </Skeleton>
+            <TouchableOpacity
+              className="flex-1 ml-3 mr-5"
+              activeOpacity={0.7}
+              disabled={isPending}
+              onPress={() => setIsModalOpen(true)}
+            >
+              <View className="flex justify-center">
+                <Skeleton isLoading={isPending} height={24}>
+                  <Text
+                    className="text-base font-pjs-bold"
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                  >
+                    {seller?.data?.name}
+                  </Text>
+                </Skeleton>
 
-              <Skeleton isLoading={isPending} height={16}>
-                <View className="flex flex-row items-center">
-                  <Image
-                    source={icons.location}
-                    tintColor="#757575"
-                    className="w-3 h-3"
-                  />
-                  <SellerAddress address={seller?.data?.address} />
-                </View>
-              </Skeleton>
-              <Skeleton isLoading={isPending} height={11} width={60} marginTop={3}>
-                <Text className="font-pjs-regular text-[10px]">
-                  {seller?.data?.subscriber} Subscriber
-                </Text>
-              </Skeleton>
-            </View>
+                <Skeleton isLoading={isPending} height={16}>
+                  <View className="flex flex-row items-center">
+                    <Image
+                      source={icons.location}
+                      tintColor="#757575"
+                      className="w-3 h-3"
+                    />
+                    <SellerAddress address={seller?.data?.address} />
+                  </View>
+                </Skeleton>
+                <Skeleton isLoading={isPending} height={11} width={60} marginTop={3}>
+                  <Text className="font-pjs-regular text-[10px]">
+                    {seller?.data?.subscriber} Subscriber
+                  </Text>
+                </Skeleton>
+              </View>
+            </TouchableOpacity>
             <SubscribeButton sellerId={seller?.data?.accountId || ""} />
           </View>
 
@@ -126,6 +133,24 @@ export default function SellerId() {
               />
             </ScrollView>
           </View>
+          <Modal
+            title="Informasi Penjual"
+            onClose={() => setIsModalOpen(false)}
+            isVisible={isModalOpen}
+            titleCancel="Tutup"
+          >
+            <View className="flex" style={{ rowGap: 15 }}>
+              <Text className="text-sm font-pjs-semibold">{seller?.data?.name}</Text>
+              <Text className="text-sm font-pjs-regular">{seller?.data?.address}</Text>
+              <Text className="text-xs font-pjs-bold">
+                {seller?.data?.subscriber} Subscriber
+              </Text>
+              <Text className="text-xs font-pjs-bold">
+                {seller?.data?.products.length} Produk
+              </Text>
+              {/* ! TODO: Add Joined Date Information (NTC Backend response) */}
+            </View>
+          </Modal>
         </View>
       </SafeAreaView>
     </>
