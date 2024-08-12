@@ -10,6 +10,8 @@ type Props = {
     title: string;
     onPress: () => void;
     isAvatarDeleteMenu?: boolean;
+    icon?: string;
+    color?: string;
   }[];
   onClose: () => void;
   isUserAvatar?: boolean;
@@ -27,23 +29,36 @@ export default function ModalSelect({
       <RNModal animationType="fade" transparent={true} visible={isVisible}>
         <View className="flex items-center justify-center w-full h-full bg-black/40">
           <View className="w-[90%] mt-[-50%]">
-            <View className="flex-row items-center justify-end px-5 py-3 bg-white rounded-t-xl">
-              <TouchableOpacity activeOpacity={0.7} onPress={onClose}>
+            <View className="flex-row items-center justify-end py-3 bg-white rounded-t-xl">
+              <Text className="absolute w-full text-base text-center font-pjs-bold">
+                {isUserAvatar ? "Foto Profile" : "Foto Produk"}
+              </Text>
+              <TouchableOpacity activeOpacity={0.7} onPress={onClose} className="px-5">
                 <Image source={icons.close} className="w-6 h-6" />
               </TouchableOpacity>
             </View>
-            <View className="flex px-5 pb-6 bg-white rounded-b-xl" style={{ rowGap: 10 }}>
+            <View
+              className="flex-row w-full px-5 pt-3 pb-6 bg-white rounded-b-xl"
+              style={{ columnGap: 10 }}
+            >
               {selectList.map((item, index) => (
                 <TouchableOpacity
                   activeOpacity={0.7}
                   className={cn(
-                    "items-center px-2 py-3 border rounded-md border-black/30",
+                    "items-center px-2 py-3 rounded-md flex-1 bg-[#EFEFEF]",
                     item.isAvatarDeleteMenu && !isUserAvatar && "hidden"
                   )}
                   key={index}
                   onPress={item.onPress}
                 >
-                  <Text className="text-[#1B1717] font-pjs-semibold text-sm">
+                  {item.icon && (
+                    <Image
+                      source={item.icon}
+                      className="w-6 h-6"
+                      tintColor={item.color || "#1B1717"}
+                    />
+                  )}
+                  <Text className="text-sm text-slate-800 font-pjs-semibold">
                     {item.title}
                   </Text>
                 </TouchableOpacity>

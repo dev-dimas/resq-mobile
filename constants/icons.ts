@@ -5,11 +5,13 @@ import close from "../assets/icons/close.png";
 import currentLocation from "../assets/icons/current-location.png";
 import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
+import eyeMd from "../assets/icons/eye-md.png";
 import groupFill from "../assets/icons/group-fill.png";
 import groupOutline from "../assets/icons/group-outline.png";
 import heartFill from "../assets/icons/heart-fill.png";
 import heartOutline from "../assets/icons/heart-outline.png";
 import home from "../assets/icons/home.png";
+import image from "../assets/icons/image.png";
 import location from "../assets/icons/location.png";
 import logout from "../assets/icons/logout.png";
 import pencil from "../assets/icons/pencil.png";
@@ -27,11 +29,13 @@ export default {
   currentLocation,
   eyeHide,
   eye,
+  eyeMd,
   groupFill,
   groupOutline,
   home,
   heartOutline,
   heartFill,
+  image,
   location,
   logout,
   pencil,
