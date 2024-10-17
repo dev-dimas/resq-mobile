@@ -1,8 +1,8 @@
 import { Stack } from "expo-router";
-import { ComponentProps } from "react";
+import { ComponentProps, memo } from "react";
 import BackButton from "./back-button";
 
-export default function Header({
+function Header({
   withBackButton = false,
   title,
   ...props
@@ -32,3 +32,5 @@ export default function Header({
     />
   );
 }
+
+export default memo(Header);

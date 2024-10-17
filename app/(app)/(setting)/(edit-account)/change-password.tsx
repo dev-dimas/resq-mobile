@@ -1,4 +1,5 @@
 import { changePassword } from "@/api/account";
+import { FetchError } from "@/api/core";
 import Button from "@/components/button";
 import Header from "@/components/header";
 import InputField from "@/components/input-field";
@@ -24,12 +25,12 @@ export default function ChangePassword() {
     onSuccess: () => {
       Toast.show({
         type: "success",
-        text1: "Sukses",
+        text1: "Berhasil",
         text2: "Kata sandi berhasil diperbarui",
       });
     },
-    onError: (error) => {
-      if (error.message === "Forbidden") {
+    onError: (error: FetchError) => {
+      if (error.res.statusCode === 403) {
         Toast.show({
           type: "error",
           text1: "Gagal",
@@ -43,7 +44,7 @@ export default function ChangePassword() {
     resolver: zodResolver(changePasswordSchema),
   });
 
-  const { control } = form;
+  const { control, setFocus } = form;
 
   const onSubmit: SubmitHandler<TChangePasswordSchema> = async (data) => {
     await changePasswordRequest.mutateAsync(data);
@@ -66,7 +67,11 @@ export default function ChangePassword() {
                 label="Kata Sandi Saat Ini"
                 placeholder="Masukkan kata sandi saat ini"
                 type="password"
+                autoCapitalize="none"
                 editable={!changePasswordRequest.isPending}
+                returnKeyType="next"
+                onSubmitEditing={() => setFocus("newPassword")}
+                blurOnSubmit={false}
               />
               <InputField
                 name="newPassword"
@@ -74,7 +79,11 @@ export default function ChangePassword() {
                 label="Kata Sandi Baru"
                 placeholder="Masukkan kata sandi baru"
                 type="password"
+                autoCapitalize="none"
                 editable={!changePasswordRequest.isPending}
+                returnKeyType="next"
+                onSubmitEditing={() => setFocus("confirmPassword")}
+                blurOnSubmit={false}
               />
               <InputField
                 name="confirmPassword"
@@ -82,6 +91,7 @@ export default function ChangePassword() {
                 label="Konfirmasi Kata Sandi Baru"
                 placeholder="Masukkan konfirmasi kata sandi baru"
                 type="password"
+                autoCapitalize="none"
                 editable={!changePasswordRequest.isPending}
               />
             </View>

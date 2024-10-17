@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
 import Skeleton from "../skeleton";
+import { FetchError } from "@/api/core";
 
 type Props = {
   sellerId: string;
@@ -36,7 +37,7 @@ export default function SubscribeButton({
       });
       await queryClient.invalidateQueries({ queryKey: ["seller", sellerId] });
     },
-    onError: async (error) => {
+    onError: async (error: FetchError) => {
       await queryClient.invalidateQueries({
         queryKey: ["subscription"],
       });
@@ -44,7 +45,7 @@ export default function SubscribeButton({
         queryKey: ["product", productId],
       });
       await queryClient.invalidateQueries({ queryKey: ["seller", sellerId] });
-      if (error.message === "Conflict") {
+      if (error.res.statusCode === 409) {
         Toast.show({
           type: "error",
           text1: "Gagal",

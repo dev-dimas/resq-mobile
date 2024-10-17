@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 import {
   ActivityIndicator,
   Text,
@@ -19,7 +19,7 @@ type Props<T extends FieldValues> = {
   onSubmit?: SubmitHandler<T>;
 } & TouchableOpacityProps;
 
-export default function Button<T extends FieldValues>({
+function Button<T extends FieldValues>({
   children,
   loadingColor = "#fff",
   containerStyles,
@@ -58,3 +58,5 @@ export default function Button<T extends FieldValues>({
     </TouchableOpacity>
   );
 }
+
+export default memo(Button) as typeof Button;

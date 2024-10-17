@@ -13,7 +13,8 @@ export type TFavorite = (Product & {
 export default function useGetFavorite() {
   const { token } = useToken();
   const { user } = useSession();
-  const isCustomer = (!!user?.data?.subscriber && !user.data.isAdmin) || false;
+  const isCustomer =
+    (!!!user?.data?.subscriber && !Array.isArray(user?.data?.complaints)) || false;
 
   const favorite = useQuery<{
     message: string;

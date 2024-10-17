@@ -1,3 +1,4 @@
+import { Product } from "@/types/product.type";
 import clsx, { ClassValue } from "clsx";
 import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
@@ -41,4 +42,46 @@ export function getAddress(address: string): string {
   const cleanedAddress = address.replace(plusCodeRegex, "");
 
   return cleanedAddress;
+}
+
+export function isProductAvailable(product: Product): boolean {
+  const now = dayjs();
+
+  const startDate = dayjs(product.startTime);
+  const endDate = dayjs(product.endTime);
+
+  if (now.isAfter(startDate) && now.isBefore(endDate)) {
+    return true;
+  }
+
+  if (!product.isDaily) {
+    return false;
+  }
+
+  let startTimeSell = dayjs(now)
+    .hour(startDate.hour())
+    .minute(startDate.minute())
+    .millisecond(0);
+  let endTimeSell = dayjs(now)
+    .hour(endDate.hour())
+    .minute(endDate.minute())
+    .millisecond(0);
+
+  if (startTimeSell.isAfter(endTimeSell) && now.isBefore(endTimeSell)) {
+    startTimeSell = startTimeSell.subtract(1, "day");
+  } else if (
+    startTimeSell.isAfter(endTimeSell) &&
+    now.isAfter(startTimeSell) &&
+    now.isAfter(endTimeSell)
+  ) {
+    endTimeSell = endTimeSell.add(1, "day");
+  }
+
+  if (
+    (now.isAfter(startTimeSell) && now.isBefore(endTimeSell)) ||
+    startTimeSell.isSame(endTimeSell)
+  )
+    return true;
+
+  return false;
 }

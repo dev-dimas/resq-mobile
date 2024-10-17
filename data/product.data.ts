@@ -4,5 +4,13 @@ export type ProductNearby = {
   distance: number;
 } & Pick<
   Product,
-  "id" | "name" | "categoryName" | "description" | "images" | "price" | "imageBlurHash"
+  | "id"
+  | "name"
+  | "categoryName"
+  | "description"
+  | "images"
+  | "price"
+  | "imageBlurHash"
+  | "startTime"
+  | "endTime"
 >;

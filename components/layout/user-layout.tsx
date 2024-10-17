@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { ReactNode, useCallback, useState } from "react";
+import { memo, ReactNode, useCallback, useState } from "react";
 import { Dimensions, RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -10,11 +10,7 @@ type Props = {
   containerClassname?: string;
 };
 
-export default function UserLayout({
-  children,
-  containerClassname,
-  scrollViewClassname,
-}: Props) {
+function UserLayout({ children, containerClassname, scrollViewClassname }: Props) {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
@@ -39,6 +35,7 @@ export default function UserLayout({
             onRefresh={onRefresh}
           />
         }
+        contentContainerStyle={{ flexGrow: 1 }}
       >
         <View
           className={cn("flex items-center flex-1 w-full px-6 pb-8", containerClassname)}
@@ -52,3 +49,5 @@ export default function UserLayout({
     </SafeAreaView>
   );
 }
+
+export default memo(UserLayout);

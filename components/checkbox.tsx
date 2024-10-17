@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
@@ -8,7 +8,7 @@ type Props = {
   defaultValue?: boolean;
 } & React.ComponentProps<typeof BouncyCheckbox>;
 
-export default function Checkbox({ control, name, defaultValue, ...props }: Props) {
+function Checkbox({ control, name, defaultValue, ...props }: Props) {
   return (
     <Controller
       name={name}
@@ -46,3 +46,5 @@ export default function Checkbox({ control, name, defaultValue, ...props }: Prop
     />
   );
 }
+
+export default memo(Checkbox);

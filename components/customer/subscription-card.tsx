@@ -2,7 +2,7 @@ import { icons } from "@/constants/";
 import env from "@/env";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React from "react";
+import React, { memo } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Account } from "@/types/account.type";
 import { Seller } from "@/types/sellert.type";
@@ -12,11 +12,11 @@ import Skeleton from "../skeleton";
 
 type Props = {
   subscription: Pick<Seller, "accountId" | "latitude" | "longitude" | "address"> &
-    Pick<Account, "name" | "avatar"> & { subscriber: number };
+    Pick<Account, "name" | "avatar" | "avatarBlurHash"> & { subscriber: number };
   isSkeleton?: boolean;
 };
 
-export default function SubscriptionCard({ subscription, isSkeleton = false }: Props) {
+function SubscriptionCard({ subscription, isSkeleton = false }: Props) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -42,6 +42,9 @@ export default function SubscriptionCard({ subscription, isSkeleton = false }: P
               }
               className=" w-[73px] aspect-square rounded-full"
               contentFit="cover"
+              placeholder={{ blurhash: subscription.avatarBlurHash || undefined }}
+              placeholderContentFit="cover"
+              recyclingKey={subscription.accountId}
             />
           </View>
         </Skeleton>
@@ -87,3 +90,5 @@ export default function SubscriptionCard({ subscription, isSkeleton = false }: P
     </TouchableOpacity>
   );
 }
+
+export default memo(SubscriptionCard);

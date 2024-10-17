@@ -4,14 +4,15 @@ import UserLayout from "@/components/layout/user-layout";
 import NotFound from "@/components/not-found";
 import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
+import { useMemo } from "react";
 import { Text } from "react-native";
 
 export default function Nearby() {
   const { user } = useSession();
 
-  const nearbyProduct = user?.data.products
-    .filter((product) => product.distance <= 3)
-    .sort((a, b) => a.distance - b.distance);
+  const nearbyProduct = useMemo(() => {
+    return user?.data.products.sort((a, b) => a.distance - b.distance);
+  }, [user?.data.products]);
 
   if (!user?.data.products && user !== null) {
     return (
@@ -32,6 +33,7 @@ export default function Nearby() {
           renderItem={({ item }) => {
             return <ProductCard product={item} />;
           }}
+          keyExtractor={(item) => item.id}
           ListEmptyComponent={
             <Text className="text-center font-pjs-regular">
               Belum ada penjualan di dekatmu.

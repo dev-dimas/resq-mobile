@@ -1,26 +1,31 @@
-import { priceToRupiah, twoDecimals } from "@/lib/utils";
+import { isProductAvailable, priceToRupiah, twoDecimals } from "@/lib/utils";
 import { icons } from "@/constants";
-import { ProductNearby } from "@/data/product.data";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 import FavoriteButton from "./favorite-button";
 import env from "@/env";
 import Skeleton from "../skeleton";
+import { Product } from "@/types/product.type";
+import OnsaleStatus from "../onsale-status";
+import { memo } from "react";
 
 type Props = {
-  product: ProductNearby;
+  product: Product & { distance: number };
   withFavoriteButton?: boolean;
+  withOnsaleStatus?: boolean;
   hideDistance?: boolean;
   isLoading?: boolean;
 };
 
-export default function ProductCard({
+function ProductCard({
   product,
   hideDistance = false,
   withFavoriteButton = false,
+  withOnsaleStatus = false,
   isLoading = false,
 }: Props) {
+  const isProductTimeExpired = !isProductAvailable(product as Product);
   return (
     <Skeleton isLoading={isLoading} height={102} marginTop={4} marginBottom={4}>
       <TouchableOpacity
@@ -28,13 +33,18 @@ export default function ProductCard({
         className="w-full p-4 my-1 overflow-hidden bg-white border border-opacity-50 rounded-lg border-slate-200"
         onPress={isLoading ? undefined : () => router.navigate(`/product/${product.id}`)}
       >
-        <View className="flex flex-row gap-3 ">
+        <View className="flex flex-row items-center gap-3 ">
           <Image
-            source={env.EXPO_PUBLIC_API_URL + product.images[0]}
+            source={
+              product.images.length
+                ? env.EXPO_PUBLIC_API_URL + product.images[0]
+                : undefined
+            }
             contentFit="cover"
-            placeholder={{ blurhash: product.imageBlurHash }}
+            placeholder={{ blurhash: product.imageBlurHash || undefined }}
             placeholderContentFit="cover"
             className="w-[70px] h-[70px] rounded-full"
+            recyclingKey={product.id}
           />
           <View className="flex flex-row items-center justify-between flex-1">
             <View className="flex justify-between flex-1 h-full">
@@ -62,8 +72,14 @@ export default function ProductCard({
                     </Text>
                   </View>
                 )}
+                {withOnsaleStatus && (
+                  <OnsaleStatus
+                    isCustomerScreen
+                    isOnsale={product.isActive && !isProductTimeExpired}
+                  />
+                )}
               </View>
-              <Text className="text-base font-pjs-bold text-[#FF3B30]">
+              <Text className="mt-2 text-base font-pjs-bold text-[#FF3B30]">
                 {priceToRupiah(product.price)}
               </Text>
             </View>
@@ -87,3 +103,5 @@ export default function ProductCard({
     </Skeleton>
   );
 }
+
+export default memo(ProductCard);

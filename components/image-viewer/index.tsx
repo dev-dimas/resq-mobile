@@ -2,8 +2,9 @@ import { StatusBar } from "expo-status-bar";
 import { ImageRequireSource, ImageURISource } from "react-native";
 import ImageView from "react-native-image-viewing";
 import CustomHeaderImageViewer from "./custom-header-image-viewer";
+import { memo } from "react";
 
-export default function ImageViewer({
+function ImageViewer({
   images,
   isVisible,
   setIsVisible,
@@ -32,3 +33,5 @@ export default function ImageViewer({
     </>
   );
 }
+
+export default memo(ImageViewer);

@@ -22,11 +22,12 @@ export default function Favorite() {
       <UserLayout scrollViewClassname="mt-[-10px]">
         <FlashList
           data={favorite?.data}
-          estimatedItemSize={109}
-          estimatedListSize={{ width: 355, height: 805 }}
+          estimatedItemSize={129}
+          estimatedListSize={{ width: 355, height: 905 }}
           renderItem={({ item }) => {
-            return <ProductCard product={item} withFavoriteButton={true} />;
+            return <ProductCard product={item} withFavoriteButton withOnsaleStatus />;
           }}
+          keyExtractor={(item) => item.id}
           ListEmptyComponent={
             <Text className="text-center font-pjs-regular">
               Kamu belum memiliki produk favorit

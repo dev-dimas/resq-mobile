@@ -51,10 +51,10 @@ const TimeInput = React.memo(
                   mode="time"
                   value={value === "" ? new Date() : new Date(value)}
                   onChange={(e, selectedTime) => {
+                    setShowTimePicker(false);
                     if (e.type === "set") {
                       onChange(selectedTime);
                     }
-                    setShowTimePicker(false);
                   }}
                   is24Hour
                   themeVariant="light"

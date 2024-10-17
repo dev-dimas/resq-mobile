@@ -19,6 +19,15 @@ type TFetchOptions<T extends TMethodRequest> = T extends "GET"
       isFormData?: boolean;
     };
 
+export class FetchError extends Error {
+  constructor(
+    public res: Response & { statusCode: number },
+    message?: string
+  ) {
+    super(message);
+  }
+}
+
 class CoreAPI {
   async fetch<T extends TMethodRequest>({
     token,
@@ -56,9 +65,14 @@ class CoreAPI {
 
       const json = await res.json();
 
+      if (!res.ok) {
+        throw new FetchError({ ...json, statusCode: res.status });
+      }
       return json;
     } catch (error) {
-      console.log(`Error Fetch ${url} : `, error);
+      if (error instanceof FetchError) {
+        console.log(`Error Fetch ${url} : `, error.res);
+      }
       throw error;
     }
   }

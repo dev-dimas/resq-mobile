@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { memo } from "react";
 import { Text } from "react-native";
 
-export default function SellerAddress({
+function SellerAddress({
   address,
   className,
 }: {
@@ -19,3 +19,5 @@ export default function SellerAddress({
     </Text>
   );
 }
+
+export default memo(SellerAddress);

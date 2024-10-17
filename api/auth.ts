@@ -15,12 +15,11 @@ export async function postSignUp(data: Omit<TSignUpSchema, "confirmPassword">) {
 }
 
 export async function postSignIn(data: TSignInSchema) {
-  const result = await coreApi.fetch({
+  return await coreApi.fetch({
     url: "/account/login",
     method: "POST",
     data,
   });
-  return result;
 }
 
 export async function fetchDashboard(token: string) {

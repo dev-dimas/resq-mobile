@@ -22,6 +22,7 @@ export const toastConfig: ToastConfig = {
             fontSize: 14,
             color: "black",
           }}
+          text2NumberOfLines={3}
           style={{
             borderLeftColor: "#22c55e",
             backgroundColor: "#dcfce7",
@@ -42,6 +43,7 @@ export const toastConfig: ToastConfig = {
         fontSize: 14,
         color: "black",
       }}
+      text2NumberOfLines={3}
       style={{
         borderLeftColor: "#ef4444",
         backgroundColor: "#fee2e2",
@@ -60,6 +62,7 @@ export const toastConfig: ToastConfig = {
         fontSize: 14,
         color: "black",
       }}
+      text2NumberOfLines={3}
       style={{
         borderLeftColor: "#3b82f6",
         backgroundColor: "#dbeafe",

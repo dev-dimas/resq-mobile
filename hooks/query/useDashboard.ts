@@ -5,6 +5,9 @@ import { useToken } from "@/store/useToken";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Product } from "@/types/product.type";
+import { Complaints } from "@/types/complaint.type";
+import { Account } from "@/types/account.type";
+import { FetchError } from "@/api/core";
 
 export type DashboardResponse = {
   name: string;
@@ -15,7 +18,21 @@ export type DashboardResponse = {
   longitude: string;
   address: string;
   subscriber?: number;
-  isAdmin?: boolean;
+  complaints?: (Complaints & {
+    customer: {
+      account: Pick<
+        Account,
+        "id" | "name" | "isActive" | "email" | "avatar" | "avatarBlurHash"
+      >;
+    };
+  } & {
+    seller: {
+      account: Pick<
+        Account,
+        "id" | "name" | "isActive" | "email" | "avatar" | "avatarBlurHash"
+      >;
+    };
+  })[];
   products: (Product & { distance: number; latitude: string; longitude: string })[];
   expoPushToken?: string;
 };
@@ -35,13 +52,15 @@ export default function useDashboard() {
   });
 
   useEffect(() => {
-    if (dashboard.data?.message === "Unauthorized") {
-      SecureStore.deleteItemAsync("token");
-      setToken(null);
-      setUser(undefined);
-      return;
+    if (dashboard.error instanceof FetchError) {
+      if (dashboard.error.res.statusCode === 401) {
+        SecureStore.deleteItemAsync("token");
+        setToken(null);
+        setUser(undefined);
+        return;
+      }
     }
-  }, [dashboard.failureReason, setToken, setUser]);
+  }, [dashboard.error, setToken, setUser]);
 
   return { ...dashboard };
 }

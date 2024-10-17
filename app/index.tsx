@@ -7,8 +7,11 @@ export default function Index() {
   const { user } = useSession();
 
   if (token && user?.data) {
-    const href =
-      typeof user.data.subscriber === "number" ? "/seller/home" : "/customer/home";
+    let href = "";
+
+    if (Array.isArray(user.data.complaints)) href = "/admin/complaints";
+    else if (typeof user.data.subscriber === "number") href = "/seller/home";
+    else href = "/customer/home";
     return <Redirect href={href} />;
   } else return <Redirect href="/sign-in" />;
 }

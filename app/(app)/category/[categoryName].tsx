@@ -40,6 +40,7 @@ export default function CategoryName() {
           renderItem={({ item }) => {
             return <ProductCard product={item} />;
           }}
+          keyExtractor={(item) => item.id}
           ListEmptyComponent={
             <Text className="text-center font-pjs-regular">
               Kategori {categoryName.replace(/^./, (match) => match.toUpperCase())}{" "}

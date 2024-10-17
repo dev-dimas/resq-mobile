@@ -1,11 +1,12 @@
-import { priceToRupiah } from "@/lib/utils";
+import { isProductAvailable, priceToRupiah } from "@/lib/utils";
 import { icons } from "@/constants";
 import env from "@/env";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, memo, SetStateAction } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Product } from "@/types/product.type";
+import OnsaleStatus from "../onsale-status";
 
 type Props = {
   product: Product;
@@ -13,11 +14,13 @@ type Props = {
   setProductToBeDelete: Dispatch<SetStateAction<Product | null>>;
 };
 
-export default function SellerProductCard({
+function SellerProductCard({
   product,
   setIsModalDeleteOpen,
   setProductToBeDelete,
 }: Props) {
+  const isProductTimeExpired = !isProductAvailable(product);
+
   return (
     <>
       <TouchableOpacity
@@ -31,6 +34,7 @@ export default function SellerProductCard({
             placeholder={{ blurhash: product.imageBlurHash }}
             placeholderContentFit="cover"
             className="w-[70px] h-[70px] rounded-full"
+            recyclingKey={product.id}
           />
           <View className="flex flex-row items-center justify-between flex-1">
             <View className="flex justify-between flex-1 h-full">
@@ -42,6 +46,7 @@ export default function SellerProductCard({
                 >
                   {product.name}
                 </Text>
+                <OnsaleStatus isOnsale={product.isActive && !isProductTimeExpired} />
               </View>
               <Text className="text-base font-pjs-bold text-[#FF3B30]">
                 {priceToRupiah(product.price)}
@@ -82,3 +87,5 @@ export default function SellerProductCard({
     </>
   );
 }
+
+export default memo(SellerProductCard);

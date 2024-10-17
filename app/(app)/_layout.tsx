@@ -1,17 +1,15 @@
 import { setNotificationToken, updateLocation } from "@/api/account";
-import { toastConfig } from "@/components/toast-config";
 import { useNotificationObserver } from "@/hooks/useNotificationObserver";
-import { registerForPushNotificationsAsync } from "@/lib/register-notification";
-import { getAddress } from "@/lib/utils";
 import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
 import { Redirect, Stack } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import * as Location from "expo-location";
+import { getAddress } from "@/lib/utils";
 import { Platform } from "react-native";
-import Toast from "react-native-toast-message";
+import { registerForPushNotificationsAsync } from "@/lib/register-notification";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -42,10 +40,11 @@ export default function AppLayout() {
   });
 
   useEffect(() => {
+    if (Array.isArray(user?.data.complaints)) return;
+
     registerForPushNotificationsAsync().then(async (token) => {
       if (!token) return;
       if (token === user?.data.expoPushToken) return;
-
       await updateNotification.mutateAsync(token).then(() => {
         setExpoPushToken(token);
       });
@@ -72,18 +71,18 @@ export default function AppLayout() {
       responseListener.current &&
         Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   useEffect(() => {
     (async () => {
       if (!token || !user) return;
+      if (Array.isArray(user.data.complaints)) return;
 
       if (user?.data.latitude && user?.data.longitude && user.data.address) return;
 
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        return;
-      }
+      if (status !== "granted") return;
 
       const currentLocation = await Location.getCurrentPositionAsync({
         accuracy: 4,
@@ -111,10 +110,5 @@ export default function AppLayout() {
     return <Redirect href="/sign-in" />;
   }
 
-  return (
-    <>
-      <Stack screenOptions={{ headerShown: false, animation: "ios" }} />
-      <Toast autoHide position="top" visibilityTime={3000} config={toastConfig} />
-    </>
-  );
+  return <Stack screenOptions={{ headerShown: false, animation: "ios" }} />;
 }

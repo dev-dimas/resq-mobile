@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useCallback } from "react";
 import ProductCard from "@/components/customer/product-card";
 import Header from "@/components/header";
 import UserLayout from "@/components/layout/user-layout";
@@ -6,7 +7,6 @@ import { useSession } from "@/store/useSession";
 import { FlashList } from "@shopify/flash-list";
 import { icons } from "@/constants";
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Product } from "@/types/product.type";
 
@@ -15,17 +15,23 @@ type TProduct = Product & { distance: number; latitude: string; longitude: strin
 export default function Search() {
   const { user } = useSession();
   const [keyword, setKeyword] = useState<string>("");
-  const [products, setProducts] = useState<TProduct[]>();
+  const [products, setProducts] = useState<TProduct[]>([]);
 
   useEffect(() => {
-    if (keyword) {
+    if (keyword && user?.data.products) {
       setProducts(
-        user?.data.products!.filter((product) =>
+        user.data.products.filter((product) =>
           product.name.toLowerCase().includes(keyword.toLowerCase())
         )
       );
+    } else {
+      setProducts([]);
     }
   }, [keyword, user?.data.products]);
+
+  const handleKeywordChange = useCallback((text: string) => {
+    setKeyword(text);
+  }, []);
 
   return (
     <>
@@ -50,7 +56,7 @@ export default function Search() {
             )}
             style={{ includeFontPadding: false }}
             value={keyword}
-            onChangeText={(text) => setKeyword(text)}
+            onChangeText={handleKeywordChange}
             autoFocus
           />
         </View>
@@ -60,9 +66,8 @@ export default function Search() {
             data={products}
             estimatedItemSize={109}
             estimatedListSize={{ width: 363, height: 805 }}
-            renderItem={({ item }) => {
-              return <ProductCard product={item} />;
-            }}
+            renderItem={({ item }) => <ProductCard product={item} />}
+            keyExtractor={(item) => item.id}
             ListEmptyComponent={
               <Text className={cn("text-center font-pjs-regular", !keyword && "hidden")}>
                 {keyword && `Tidak dapat menemukan ${keyword}`}

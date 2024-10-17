@@ -3,7 +3,7 @@ import { icons } from "@/constants";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import { Modal as RNModal, Text, TouchableOpacity, View } from "react-native";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 
 type Props = {
   isVisible: boolean;
@@ -18,7 +18,7 @@ type Props = {
   children?: ReactNode;
 };
 
-export default function Modal({
+function Modal({
   isVisible,
   title,
   description,
@@ -35,7 +35,7 @@ export default function Modal({
       <StatusBar backgroundColor={isVisible ? "#00000066" : undefined} animated={false} />
       <RNModal animationType="fade" transparent={true} visible={isVisible}>
         <View className="flex items-center justify-center w-full h-full bg-black/40">
-          <View className="w-[90%] mt-[-50%]">
+          <View className="w-[90%] max-h-[50%] mt-[-50%]">
             <View className="flex-row items-center justify-between px-5 py-3 bg-white rounded-t-xl">
               <Text
                 className="text-base font-pjs-bold"
@@ -75,7 +75,8 @@ export default function Modal({
                   activeOpacity={0.7}
                   className={cn(
                     "px-3 py-2 rounded-lg",
-                    buttonVariant === "red" ? "bg-[#FF3B30]" : "bg-[#49CB5C]"
+                    buttonVariant === "red" ? "bg-[#FF3B30]" : "bg-[#49CB5C]",
+                    isLoading && "opacity-70"
                   )}
                   onPress={onConfirm}
                   disabled={isLoading}
@@ -95,3 +96,5 @@ export default function Modal({
     </>
   );
 }
+
+export default memo(Modal);

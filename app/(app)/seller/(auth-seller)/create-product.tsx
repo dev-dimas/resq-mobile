@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import ImagePicker from "@/components/image-picker";
 import InputField from "@/components/input-field";
 import UserLayout from "@/components/layout/user-layout";
+import PriceInput from "@/components/price-input";
 import ProductCategoryPicker from "@/components/seller/product-category-picker";
 import TimeInput from "@/components/seller/time-input";
 import { TCreateProductSchema, createProductSchema } from "@/schemas/form/product";
@@ -13,18 +14,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ImagePickerSuccessResult } from "expo-image-picker";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { View } from "react-native";
+import { Keyboard, View } from "react-native";
 import Toast from "react-native-toast-message";
 
-export default function CreateProduct() {
+function CreateProduct() {
   const { token } = useToken();
   const queryClient = useQueryClient();
   const [productImage, setProductImage] = useState<ImagePickerSuccessResult | null>(null);
+
   const form = useForm({
     resolver: zodResolver(createProductSchema),
   });
+
   const createProductRequest = useMutation({
     mutationFn: (data: TCreateProductSchema) =>
       createProduct(data, productImage!, token!),
@@ -45,13 +48,21 @@ export default function CreateProduct() {
     },
   });
 
-  const { control } = form;
+  const { control, setFocus } = form;
 
-  const onSubmit: SubmitHandler<TCreateProductSchema> = async (data) => {
-    await createProductRequest.mutateAsync(data);
-    router.back();
-  };
+  const onSubmit: SubmitHandler<TCreateProductSchema> = useCallback(
+    async (data) => {
+      await createProductRequest.mutateAsync(data);
+      router.back();
+    },
+    [createProductRequest]
+  );
 
+  // Use memoization to avoid recreating components unnecessarily
+  const isDisabled = useMemo(
+    () => createProductRequest.isPending,
+    [createProductRequest.isPending]
+  );
   return (
     <>
       <Header title="Tambah Produk" withBackButton />
@@ -61,7 +72,7 @@ export default function CreateProduct() {
             name="images"
             control={control}
             setProductImage={setProductImage}
-            disabled={createProductRequest.isPending}
+            disabled={isDisabled}
           />
 
           <FormProvider {...form}>
@@ -70,21 +81,30 @@ export default function CreateProduct() {
               control={control}
               label="Nama Produk"
               placeholder="Masukkan nama produk"
-              editable={!createProductRequest.isPending}
+              editable={!isDisabled}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                setFocus("categoryName");
+                Keyboard.dismiss();
+              }}
+              blurOnSubmit={false}
             />
             <ProductCategoryPicker
               name="categoryName"
               control={control}
               label="Kategori"
-              editable={!createProductRequest.isPending}
+              editable={!isDisabled}
             />
-            <InputField
+            <PriceInput
               name="price"
               control={control}
               label="Harga"
               placeholder="Masukkan harga produk"
               keyboardType="numeric"
-              editable={!createProductRequest.isPending}
+              editable={!isDisabled}
+              returnKeyType="next"
+              onSubmitEditing={() => setFocus("description")}
+              blurOnSubmit={false}
             />
             <InputField
               name="description"
@@ -93,7 +113,7 @@ export default function CreateProduct() {
               placeholder="Masukkan deskripsi produk"
               multiline
               numberOfLines={4}
-              editable={!createProductRequest.isPending}
+              editable={!isDisabled}
             />
             <View className="flex-row" style={{ columnGap: 22 }}>
               <TimeInput
@@ -101,21 +121,21 @@ export default function CreateProduct() {
                 control={control}
                 label="Jam Mulai"
                 containerStyles="flex-1"
-                disabled={createProductRequest.isPending}
+                disabled={isDisabled}
               />
               <TimeInput
                 name="endTime"
                 control={control}
                 label="Jam Selesai"
                 containerStyles="flex-1"
-                disabled={createProductRequest.isPending}
+                disabled={isDisabled}
               />
             </View>
             <Checkbox
               name="isDaily"
               control={control}
               text="Jual Setiap Hari"
-              disabled={createProductRequest.isPending}
+              disabled={isDisabled}
             />
             <Button
               onSubmit={onSubmit}
@@ -130,3 +150,5 @@ export default function CreateProduct() {
     </>
   );
 }
+
+export default memo(CreateProduct);

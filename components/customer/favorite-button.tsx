@@ -8,6 +8,7 @@ import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
 import { useEffect, useState } from "react";
+import { FetchError } from "@/api/core";
 
 type Props = {
   productId: string;
@@ -28,12 +29,12 @@ export default function FavoriteButton({
   const queryClient = useQueryClient();
   const addFavoriteRequest = useMutation({
     mutationFn: () => addToFavorite(productId, token!),
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["favorite"] });
     },
-    onError: async (error) => {
+    onError: async (error: FetchError) => {
       await queryClient.invalidateQueries({ queryKey: ["favorite"] });
-      if (error.message === "Conflict") {
+      if (error.res.statusCode === 409) {
         Toast.show({
           type: "error",
           text1: "Gagal",

@@ -1,3 +1,4 @@
+import { toastConfig } from "@/components/toast-config";
 import SessionProvider from "@/providers/session-provider";
 import { useFontState } from "@/store/useFontState";
 import NetInfo from "@react-native-community/netinfo";
@@ -5,6 +6,7 @@ import { QueryClient, QueryClientProvider, onlineManager } from "@tanstack/react
 import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
 import React, { useEffect } from "react";
+import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
@@ -36,6 +38,7 @@ export default function Root() {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <Slot />
+        <Toast autoHide position="top" visibilityTime={3000} config={toastConfig} />
       </SessionProvider>
     </QueryClientProvider>
   );

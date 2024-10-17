@@ -1,6 +1,6 @@
 import { Picker } from "@react-native-picker/picker";
 import { ClassValue } from "clsx";
-import React from "react";
+import React, { memo } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import { Text, View } from "react-native";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ type Props = {
   editable?: boolean;
 };
 
-export default function ProductCategoryPicker({
+function ProductCategoryPicker({
   label,
   name,
   control,
@@ -27,7 +27,7 @@ export default function ProductCategoryPicker({
       name={name}
       control={control}
       defaultValue={defaultValue}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
+      render={({ field: { onChange, value, onBlur, ref }, fieldState: { error } }) => (
         <View className={cn(containerStyles)}>
           <View className="flex items-start px-3">
             <Text className="text-sm text-black font-pjs-bold">{label}</Text>
@@ -38,6 +38,7 @@ export default function ProductCategoryPicker({
               enabled={editable}
               selectedValue={value}
               onValueChange={onChange}
+              onBlur={onBlur}
               style={{
                 width: "100%",
                 minHeight: 48,
@@ -46,6 +47,7 @@ export default function ProductCategoryPicker({
                 fontFamily: "PlusJakartaSans-Regular",
                 color: editable ? "black" : "#B1B1B1",
               }}
+              ref={ref}
             >
               <Picker.Item label="Makanan" value="Makanan" />
               <Picker.Item label="Minuman" value="Minuman" />
@@ -59,3 +61,5 @@ export default function ProductCategoryPicker({
     />
   );
 }
+
+export default memo(ProductCategoryPicker);

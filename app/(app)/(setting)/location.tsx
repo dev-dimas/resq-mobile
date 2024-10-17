@@ -74,6 +74,7 @@ export default function Location() {
     cameraRef.current?.setCamera({
       centerCoordinate: [selectedLocation?.longitude, selectedLocation?.latitude],
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const moveToCurrentLocation = () => {
@@ -183,8 +184,11 @@ export default function Location() {
           activeOpacity={0.9}
           className="absolute px-2 py-4 w-[90%] mb-10 mx-auto bg-[#FF3B30] rounded-lg bottom-0 left-[5%] items-center"
           onPress={handleUpdateLocation}
+          disabled={updateLocationRequest.isPending}
         >
-          <Text className="text-sm text-white font-pjs-bold">Simpan Lokasi</Text>
+          <Text className="text-sm text-white font-pjs-bold">
+            {updateLocationRequest.isPending ? "Loading..." : "Simpan Lokasi"}
+          </Text>
         </TouchableOpacity>
       </View>
     </>

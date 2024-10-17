@@ -15,6 +15,7 @@ import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-nati
 import { SafeAreaView } from "react-native-safe-area-context";
 import Skeleton from "@/components/skeleton";
 import Modal from "@/components/modal";
+import CreateComplaintButton from "@/components/customer/create-complaint-button";
 
 export default function SellerId() {
   let { id } = useLocalSearchParams();
@@ -103,9 +104,14 @@ export default function SellerId() {
             </TouchableOpacity>
             <SubscribeButton sellerId={seller?.data?.accountId || ""} />
           </View>
+          <CreateComplaintButton
+            sellerId={id}
+            isComplaintExist={seller?.data.complaint ? true : false}
+            isLoading={isPending}
+          />
 
           {/* List Product Section */}
-          <View className="w-full flex-1 rounded-t-[20px] pt-3 mt-6 bg-white">
+          <View className="w-full flex-1 rounded-t-[20px] pt-1 mt-3 bg-white">
             <Skeleton isLoading={isPending} height={24} width={100} marginLeft={24}>
               <Text className="text-base font-pjs-bold text-[#1B1717] px-6">Produk</Text>
             </Skeleton>
@@ -120,6 +126,7 @@ export default function SellerId() {
                     <ProductCard product={item as any} withFavoriteButton hideDistance />
                   );
                 }}
+                keyExtractor={(item) => item.id}
                 ListEmptyComponent={() =>
                   !isPending && (
                     <Text className="text-center font-pjs-regular">

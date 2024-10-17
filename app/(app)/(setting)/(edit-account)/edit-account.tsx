@@ -1,4 +1,5 @@
 import { deleteAvatarAccount, postAvatarAccount, postEditAccount } from "@/api/account";
+import { FetchError } from "@/api/core";
 import Button from "@/components/button";
 import Header from "@/components/header";
 import ImagePicker from "@/components/image-picker";
@@ -26,15 +27,23 @@ export default function EditAccount() {
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       Toast.show({
         type: "success",
-        text1: "Sukses",
+        text1: "Berhasil",
         text2: "Akun berhasil diperbarui",
       });
     },
-    onError: () => {
+    onError: (error: FetchError) => {
+      if (error.res.statusCode === 409) {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Email sudah terdaftar!",
+        });
+        return;
+      }
       Toast.show({
         type: "error",
         text1: "Gagal",
-        text2: "Gagal memperbarui foto profie. Coba lagi!",
+        text2: "Gagal memperbarui akun. Coba lagi!",
       });
     },
   });

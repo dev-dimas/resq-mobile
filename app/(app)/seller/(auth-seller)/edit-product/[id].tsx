@@ -7,30 +7,31 @@ import InputField from "@/components/input-field";
 import UserLayout from "@/components/layout/user-layout";
 import Modal from "@/components/modal";
 import NotFound from "@/components/not-found";
+import PriceInput from "@/components/price-input";
 import ProductCategoryPicker from "@/components/seller/product-category-picker";
 import TimeInput from "@/components/seller/time-input";
-import { cn } from "@/lib/utils";
+import { cn, isProductAvailable } from "@/lib/utils";
 import { TUpdateProductSchema, updateProductSchema } from "@/schemas/form/product";
 import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
+import { Category } from "@/types/category.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
 import { ImagePickerSuccessResult } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Keyboard, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { Category } from "@/types/category.type";
 
-export default function EditProduct() {
+function EditProduct() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [productImage, setProductImage] = useState<ImagePickerSuccessResult | null>(null);
   const { token } = useToken();
   const { user: seller } = useSession();
   let { id } = useLocalSearchParams();
   id = id as string;
+
   const queryClient = useQueryClient();
   const updateProductRequest = useMutation({
     mutationFn: (data: Partial<TUpdateProductSchema>) =>
@@ -51,16 +52,9 @@ export default function EditProduct() {
       });
     },
   });
+
   const reactivateProductRequest = useMutation({
     mutationFn: () => reActivateProduct(id, token!),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-      Toast.show({
-        type: "success",
-        text1: "Berhasil",
-        text2: `Berhasil memperbarui produk!`,
-      });
-    },
     onError: () => {
       Toast.show({
         type: "error",
@@ -70,29 +64,50 @@ export default function EditProduct() {
     },
   });
 
-  const product = seller?.data.products.find((product) => product.id === id);
-  const isProductTimeExpired = dayjs().isAfter(dayjs(product?.endTime));
+  const product = useMemo(
+    () => seller?.data.products.find((product) => product.id === id),
+    [seller, id]
+  );
 
   const form = useForm({
     resolver: zodResolver(updateProductSchema),
   });
 
-  const { control } = form;
+  const { control, setFocus } = form;
 
-  const onSubmit: SubmitHandler<TUpdateProductSchema> = async (data) => {
-    await updateProductRequest.mutateAsync(data);
-    router.back();
-  };
+  const onSubmit: SubmitHandler<TUpdateProductSchema> = useCallback(
+    async (data) => {
+      await updateProductRequest.mutateAsync(data);
+      router.back();
+    },
+    [updateProductRequest]
+  );
 
-  const handleChangeIsActive = async () =>
+  const handleChangeIsActive = useCallback(async () => {
     await updateProductRequest.mutateAsync({
       isActive: !product?.isActive,
     });
+  }, [updateProductRequest, product]);
 
-  const handleReactivateProduct = async () =>
-    await reactivateProductRequest.mutateAsync();
+  const handleReactivateProduct = useCallback(
+    async ({ withToastOnSuccess = true }: { withToastOnSuccess?: boolean }) => {
+      await reactivateProductRequest.mutateAsync().then(async () => {
+        if (withToastOnSuccess) {
+          await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+          Toast.show({
+            type: "success",
+            text1: "Berhasil",
+            text2: `Berhasil memperbarui produk!`,
+          });
+        }
+      });
+    },
+    [reactivateProductRequest, queryClient]
+  );
 
   if (!product) return <NotFound withHeader>Produk tidak ditemukan!</NotFound>;
+
+  const isProductTimeExpired = !isProductAvailable(product);
 
   return (
     <>
@@ -115,6 +130,12 @@ export default function EditProduct() {
               placeholder="Masukkan nama produk"
               defaultValue={product.name}
               editable={!updateProductRequest.isPending}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                setFocus("categoryName");
+                Keyboard.dismiss();
+              }}
+              blurOnSubmit={false}
             />
             <ProductCategoryPicker
               name="categoryName"
@@ -123,7 +144,7 @@ export default function EditProduct() {
               defaultValue={product.categoryName as Category["name"]}
               editable={!updateProductRequest.isPending}
             />
-            <InputField
+            <PriceInput
               name="price"
               control={control}
               label="Harga"
@@ -131,6 +152,9 @@ export default function EditProduct() {
               placeholder="Masukkan harga produk"
               keyboardType="numeric"
               editable={!updateProductRequest.isPending}
+              returnKeyType="next"
+              onSubmitEditing={() => setFocus("description")}
+              blurOnSubmit={false}
             />
             <InputField
               name="description"
@@ -187,9 +211,7 @@ export default function EditProduct() {
                     product.isActive ? "text-[#FF3B30]" : "text-[#49CB5C]"
                   )}
                 >
-                  {product.isActive && !isProductTimeExpired
-                    ? "Hentikan Penjualan"
-                    : "Aktifkan Penjualan"}
+                  {product.isActive ? "Hentikan Penjualan" : "Aktifkan Penjualan"}
                 </Text>
               </TouchableOpacity>
               <Button
@@ -210,16 +232,25 @@ export default function EditProduct() {
         description={`Apakah kamu yakin ingin ${product.isActive ? "menghentikan" : "mengaktifkan"} penjualan produk ini?`}
         titleConfirm={product.isActive ? "Hentikan" : "Aktifkan"}
         onConfirm={async () => {
-          if (!product.isActive && isProductTimeExpired) {
+          // isActive - Expired = Reactivate
+          // isActive - Not Expired =
+          // is Not Active - Expired =
+          // is Not Active - Not Expired =
+          if (!isProductTimeExpired) {
             await handleChangeIsActive();
-          } else {
-            await handleReactivateProduct();
+          } else if (product.isActive) {
+            await handleReactivateProduct({ withToastOnSuccess: true });
+          } else if (!product.isActive) {
+            await handleReactivateProduct({ withToastOnSuccess: false });
+            await handleChangeIsActive();
           }
           setIsModalOpen(false);
         }}
         buttonVariant={product.isActive ? "red" : "green"}
-        isLoading={updateProductRequest.isPending}
+        isLoading={updateProductRequest.isPending || reactivateProductRequest.isPending}
       />
     </>
   );
 }
+
+export default memo(EditProduct);

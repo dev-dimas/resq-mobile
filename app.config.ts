@@ -3,12 +3,12 @@ import "ts-node/register";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "Resq Mobile",
+  name: "Resq",
   slug: "resq-mobile",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
-  scheme: "resq-mobile",
+  scheme: "resq",
   userInterfaceStyle: "light",
   splash: {
     image: "./assets/images/splash.png",
@@ -30,7 +30,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       "android.permission.ACCESS_FINE_LOCATION",
     ],
     package: "com.dimaslabs.resq",
-    // googleServicesFile: "./google-services.json",
+    googleServicesFile: "./google-services.json",
   },
   web: {
     bundler: "metro",

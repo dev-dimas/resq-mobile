@@ -60,3 +60,19 @@ export async function unsubscribeFrom(from: string, token: string) {
     token,
   });
 }
+
+export async function sendComplaint(
+  sellerId: string,
+  description: string,
+  token: string
+) {
+  return await coreApi.fetch({
+    method: "POST",
+    url: `/customer/complaint`,
+    data: {
+      sellerId,
+      description,
+    },
+    token,
+  });
+}

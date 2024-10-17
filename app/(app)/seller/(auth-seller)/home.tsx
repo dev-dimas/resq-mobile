@@ -3,19 +3,19 @@ import UserLayout from "@/components/layout/user-layout";
 import Modal from "@/components/modal";
 import SellerProductCard from "@/components/seller/seller-product-card";
 import UserLocation from "@/components/user-location";
+import { icons } from "@/constants";
+import env from "@/env";
 import { cn, getGreeting } from "@/lib/utils";
 import { useSession } from "@/store/useSession";
 import { useToken } from "@/store/useToken";
+import { Product } from "@/types/product.type";
 import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { icons } from "@/constants";
-import env from "@/env";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { Product } from "@/types/product.type";
 
 export default function Home() {
   const { user } = useSession();
@@ -23,6 +23,8 @@ export default function Home() {
   const [productToBeDelete, setProductToBeDelete] = useState<Product | null>(null);
   const { token } = useToken();
   const queryClient = useQueryClient();
+
+  // Define the mutation for deleting a product
   const deleteProductRequest = useMutation({
     mutationFn: () => deleteProduct(productToBeDelete!.id, token!),
     onSuccess: async () => {
@@ -42,13 +44,14 @@ export default function Home() {
     },
   });
 
-  const handleDeleteProduct = async () => {
+  // Use useCallback to memoize the delete function
+  const handleDeleteProduct = useCallback(async () => {
     if (!productToBeDelete) return;
 
     await deleteProductRequest.mutateAsync();
     setIsModalDeleteOpen(false);
     setProductToBeDelete(null);
-  };
+  }, [productToBeDelete, deleteProductRequest]);
 
   return (
     <UserLayout containerClassname="pt-5">
@@ -109,9 +112,7 @@ export default function Home() {
         <TouchableOpacity
           activeOpacity={0.7}
           className="w-full h-[47px] bg-[#49CB5C] rounded-lg flex-row items-center justify-center mt-4"
-          style={{
-            columnGap: 10,
-          }}
+          style={{ columnGap: 10 }}
           onPress={() => router.navigate("/seller/(auth-seller)/create-product")}
         >
           <Image
@@ -130,26 +131,24 @@ export default function Home() {
             data={user?.data.products}
             estimatedItemSize={109}
             estimatedListSize={{ width: 364, height: 805 }}
-            renderItem={({ item }) => {
-              return (
-                <SellerProductCard
-                  product={item}
-                  setIsModalDeleteOpen={setIsModalDeleteOpen}
-                  setProductToBeDelete={setProductToBeDelete}
-                />
-              );
-            }}
+            renderItem={({ item }) => (
+              <SellerProductCard
+                product={item}
+                setIsModalDeleteOpen={setIsModalDeleteOpen}
+                setProductToBeDelete={setProductToBeDelete}
+              />
+            )}
+            keyExtractor={(item) => item.id}
             ListEmptyComponent={
               <Text className="text-center font-pjs-regular">
                 Etalase penjualan kamu masih kosong!
               </Text>
             }
-            contentContainerStyle={{
-              paddingTop: 16,
-            }}
+            contentContainerStyle={{ paddingTop: 16 }}
           />
         </View>
       </View>
+
       <Modal
         title="Hapus Produk"
         description={`Apakah kamu yakin ingin menghapus produk ${productToBeDelete?.name}?`}

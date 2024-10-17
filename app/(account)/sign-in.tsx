@@ -11,12 +11,38 @@ import { Link } from "expo-router";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { FetchError } from "@/api/core";
 
 export default function SignIn() {
   const { setToken } = useToken();
 
   const signInRequest = useMutation({
     mutationFn: postSignIn,
+    onError(error: FetchError) {
+      if (error.res.statusCode === 403) {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Email atau kata sandi salah!",
+        });
+        return;
+      }
+
+      if (error.res.statusCode === 423) {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Akun anda dinonaktifkan karena melanggar peraturan!",
+        });
+        return;
+      }
+
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Terjadi kesalahan. Coba lagi!",
+      });
+    },
   });
 
   const form = useForm({
@@ -32,14 +58,6 @@ export default function SignIn() {
       await SecureStore.setItemAsync("token", signInResponse.data.token);
       setToken(signInResponse.data.token);
       return;
-    }
-
-    if (signInResponse.message === "Forbidden") {
-      Toast.show({
-        type: "error",
-        text1: "Gagal",
-        text2: "Email atau kata sandi salah!",
-      });
     }
   };
 

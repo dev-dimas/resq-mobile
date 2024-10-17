@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { ComponentProps, ReactNode } from "react";
+import React, { ComponentProps, memo, ReactNode } from "react";
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
@@ -14,7 +14,7 @@ type Props = {
   marginRight?: number;
 } & ComponentProps<typeof ShimmerPlaceholder>;
 
-export default function Skeleton({
+function Skeleton({
   children,
   borderRadius = 8,
   isLoading = true,
@@ -41,3 +41,5 @@ export default function Skeleton({
     </ShimmerPlaceholder>
   );
 }
+
+export default memo(Skeleton);
